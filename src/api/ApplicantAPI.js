@@ -21,10 +21,12 @@ router.get('/:id', (req, res)=>{
 });
 
 
-/*
-// Create Member
+
+// Create Applicant
 router.post('/', (req, res) =>{
-    res.send(req.body)
+
+    //res.send(req.body)
+    
     const newMember = {
         id: uuid.v4(),
         name:req.body.name,
@@ -38,6 +40,7 @@ router.post('/', (req, res) =>{
 
     applicants.push(newMember);
     res.json(applicants)
+    
 });
-*/
+
 module.exports = router;
