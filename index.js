@@ -27,4 +27,7 @@ const server = app.listen(process.env.SERVER_PORT,
   console.log(`Example app listening at http://localhost:${process.env.SERVER_PORT}`)
 })
 
+//  Applicant API Routes
+app.use('/api/applicant', require('./src/api/ApplicantAPI'));
+
 module.exports = server;
