@@ -2,7 +2,8 @@ const express = require('express');
 const uuid = require('uuid');
 const router = express.Router();
 const applicants = require('../integration/ApplicantDB')
-
+const ApplicantDTO = require('../dto/ApplicantDTO');
+const Controller = require('../controller/Controller');
 
 // Gets all applicants
 router.get('/', (req, res) => {
@@ -21,10 +22,19 @@ router.get('/:id', (req, res)=>{
 });
 
 
-/*
+
+// Signup applicant
+router.post('/signup', (req, res, next) => {
+    const applicantDTO = new ApplicantDTO(req.body.firstName, req.body.lastName, req.body.email, 
+        req.body.dob, req.body.username, req.body.password);
+    const contr = new Controller();
+    contr.createController();
+    contr.signup(applicantDTO);
+    res.status(200).json({msg:'test'});
+});
+
 // Create Member
 router.post('/', (req, res) =>{
-    res.send(req.body)
     const newMember = {
         id: uuid.v4(),
         name:req.body.name,
@@ -39,5 +49,5 @@ router.post('/', (req, res) =>{
     applicants.push(newMember);
     res.json(applicants)
 });
-*/
+
 module.exports = router;
