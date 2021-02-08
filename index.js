@@ -27,12 +27,6 @@ const server = app.listen(process.env.SERVER_PORT,
 })
 // logging 
 app.use(morgan('combined'));
-//  Applicant API Routes
-// app.use('/api/applicant', require('./src/api/ApplicantAPI'));
-
-//  Applicant API Class Routes
-// app.use('/api/applicantclass', require('./src/api/ApplicantAPIClass'));
-
 
 // so u can use class
 const reqHandlerLoader = require('./src/api');
