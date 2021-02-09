@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const Applicant = require('../model/Applicant');
-const ApplicantDTO = require('../dto/ApplicantDTO');
+const Recruiter = require('../model/Recruiter');
 
 class ApplicationDAO {
     constructor(){
@@ -11,6 +11,7 @@ class ApplicationDAO {
             {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT}
         );
         Applicant.createModel(this.database);
+        Recruiter.createModel(this.database);
     }
     async createTables() {
       await this.database.authenticate();

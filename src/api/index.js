@@ -36,5 +36,6 @@ const ApplicantAPI = require('./ApplicantAPI');
  }
  const loader = new RequestHandlerLoader();
  loader.addRequestHandler(new ApplicantAPI());
+ loader.addRequestHandler(new RecruiterAPI());
 
  module.exports = loader;
