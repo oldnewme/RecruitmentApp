@@ -1,3 +1,5 @@
+const ApplicationDAO = require('../integration/ApplicationDAO');
+
 const applicants = [
     {
         id: 1,
