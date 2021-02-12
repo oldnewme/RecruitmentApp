@@ -31,8 +31,8 @@ const applicants = require('../integration/ApplicantDB');
           this.applicationDAO.signup(applicantDTO);
       }
 
-      login(username, password){
-
+      async login(username, password){
+          
     }
  }
 

@@ -34,8 +34,9 @@ class ApplicantAPI{
     });
     
     this.router.post('/login', (req, res) => {
-        controller.login(req.body.username, req.body.password);
-        res.status(200).json({msg:'user is logged in'});
+        const user = controller.login(req.body.username, req.body.password);
+       
+        res.status(200).json({msg:user.username});
     });
 
   }
