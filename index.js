@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 
-const result = require('dotenv-safe').config({
+require('dotenv-safe').config({
   path: path.join(APP_ROOT_DIR, '.env'),
   example: path.join(APP_ROOT_DIR, '.env.example')
 });
@@ -20,6 +20,13 @@ app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
+app.post('/login', (req, res) => {
+  const user = { name: req.body.username };
+  accessToken = authorization.getToken(user);
+  res.json({accessToken:accessToken});
+})
+
 
 const server = app.listen(process.env.SERVER_PORT,
   process.env.SERVER_HOST, () => {

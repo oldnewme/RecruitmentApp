@@ -27,11 +27,18 @@ const applicants = require('../integration/ApplicantDB');
       * Signs up new user
       * @param {ApplicantDTO} applicantDTO dto containing user information
       */
-      signup(applicantDTO){
-          this.applicationDAO.signup(applicantDTO);
+      async signup(applicantDTO){
+          try {
+            return await this.applicationDAO.createUser(applicantDTO);
+          } catch (error) {
+            console.log(error.message)
+            throw new Error('email is taken')
+          }
+                
       }
 
-      login(username, password){
+      async login(username, password){
+          
     }
  }
 

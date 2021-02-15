@@ -31,6 +31,7 @@ class Applicant extends Sequelize.Model {
           email: {
             type: Sequelize.STRING,
             allowNull: false,
+            unique: true
           },
           dob: {
             type: Sequelize.STRING,
@@ -39,6 +40,7 @@ class Applicant extends Sequelize.Model {
           username: {
             type: Sequelize.STRING,
             allowNull: false,
+            unique: true
           },
           password: {
             type: Sequelize.STRING,
