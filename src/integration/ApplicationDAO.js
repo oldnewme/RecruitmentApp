@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
+const validator = require('validator');
 
 class ApplicationDAO {
     constructor(){
@@ -18,14 +19,21 @@ class ApplicationDAO {
       await this.database.sync({force: false});     
   }
   
-  async signup(applicantDTO){
-    await Applicant.create({firstName: applicantDTO.firstName,
-                                              lastName: applicantDTO.lastName, 
-                                              email: applicantDTO.email,
-                                              dob: applicantDTO.dob,
-                                              username: applicantDTO.username,
-                                              password: applicantDTO.password});
+  async createUser(applicantDTO){
+    if(validator.isEmail(applicantDTO.email)){
+    return await Applicant.create({firstName: applicantDTO.firstName,
+      lastName: applicantDTO.lastName, 
+      email: applicantDTO.email,
+      dob: applicantDTO.dob,
+      username: applicantDTO.username,
+      password: applicantDTO.password});
+    } else{
+      throw new Error('email is invalid')
+    }
+
+
   }
+  
 }
 
 module.exports = ApplicationDAO;

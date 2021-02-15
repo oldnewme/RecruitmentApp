@@ -1,5 +1,5 @@
 class ApplicantDTO{
-    constructor(firstName, lastName, email, dob, username, password){
+    constructor({firstName, lastName, email, dob, username, password}){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -7,7 +7,6 @@ class ApplicantDTO{
         this.username = username;
         this.password = password;
     }
-
 }
 
 module.exports = ApplicantDTO;

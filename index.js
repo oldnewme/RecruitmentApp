@@ -3,9 +3,8 @@ const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const authorization = require(path.join(APP_ROOT_DIR, 'src/api/auth/Authorization'));
 
-const result = require('dotenv-safe').config({
+require('dotenv-safe').config({
   path: path.join(APP_ROOT_DIR, '.env'),
   example: path.join(APP_ROOT_DIR, '.env.example')
 });
@@ -22,13 +21,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/locked', authorization.authenticateToken, (req, res) => {
-  console.log('test')
-  res.json({message:'it worked'});
-})
-
 app.post('/login', (req, res) => {
-  //Authenticate user
   const user = { name: req.body.username };
   accessToken = authorization.getToken(user);
   res.json({accessToken:accessToken});
@@ -44,7 +37,6 @@ app.use(morgan('combined'));
 
 // so u can use class
 const reqHandlerLoader = require('./src/api');
-const Authorization = require('./src/api/auth/Authorization');
 reqHandlerLoader.loadHandlers(app);
 
 // 404 errors
