@@ -3,9 +3,9 @@ const router = express.Router();
 const controller = require('../controller/Controller');
 const ApplicantDTO = require('../dto/ApplicantDTO');
 
-class ApplicantAPI extends UserAPI{
+class ApplicantAPI{
     constructor(){
-        super();
+        this.router = express.Router();
     }
 
   /**
@@ -19,7 +19,7 @@ class ApplicantAPI extends UserAPI{
    * @return {string} The URL paths handled by this request handler.
    */
   static get APPLICANT_API_PATH() {
-    return super.APPLICANT_API_PATH + 'applicant';
+    return '/api/applicant';
   }
 
   async registerHandler(){
