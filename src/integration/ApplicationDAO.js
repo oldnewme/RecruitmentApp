@@ -31,7 +31,6 @@ class ApplicationDAO {
       throw new Error('email is invalid')
     }
 
-
   }
   
 }
