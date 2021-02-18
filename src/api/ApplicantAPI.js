@@ -35,7 +35,23 @@ class ApplicantAPI {
         return res.status(200).json(applicantDTO)
         } catch (error) {
           console.log('api layer')
-          res.status(401).json({error:error.message})
+
+          if(error.message === 'email is invalid') {
+            res.status(400).json({error:error.message})
+          }
+
+          else if( error.message === 'applicants.email must be unique') {
+            res.status(401).json({error:error.message})
+          }
+
+          else if( error.message === 'applicants.username must be unique' ) {
+            res.status(401).json({error:error.message})
+          }
+
+          else {
+            //if something else caused the error
+          }
+
         }
       });
 

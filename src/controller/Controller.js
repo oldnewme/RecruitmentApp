@@ -15,6 +15,7 @@ const applicants = require('../integration/ApplicantDB');
          this.applicationDAO = new ApplicationDAO();
      }
 
+
      /**
       * Instantiates a controller object
       */
@@ -32,7 +33,6 @@ const applicants = require('../integration/ApplicantDB');
             return await this.applicationDAO.createUser(applicantDTO);
           } catch (error) {
             // console.log(error.errors[0].message)
-            console.log(error)
             throw new Error(error.message)
           }  
       }

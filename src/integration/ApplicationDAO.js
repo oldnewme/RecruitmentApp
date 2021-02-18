@@ -21,12 +21,18 @@ class ApplicationDAO {
   
   async createUser(applicantDTO){
     if(validator.isEmail(applicantDTO.email)){
-    return await Applicant.create({firstName: applicantDTO.firstName,
+      await Applicant.create({firstName: applicantDTO.firstName,
       lastName: applicantDTO.lastName, 
       email: applicantDTO.email,
       dob: applicantDTO.dob,
       username: applicantDTO.username,
-      password: applicantDTO.password});
+      password: applicantDTO.password}).catch(err => {
+        console.log('err.name ' + err.name);
+        console.log('err.message ' +err.message);
+        console.log('err.errors ' + err.errors);
+        err.errors.map(e => console.log("hora "+e.message))
+        throw new Error(err.errors[0].message)
+      })
     } else{
       throw new Error('email is invalid')
     }
