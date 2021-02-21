@@ -31,19 +31,19 @@ const applicants = require('../integration/ApplicantDB');
           try {
             return await this.applicationDAO.createUser(applicantDTO);
           } catch (error) {
-            console.log(error.message)
-            throw new Error('email is taken')
+            throw error;
           }
-                
+
       }
 
+      /* TODO: finish method so that login returns success for correct credentials
+      and error if not
+      */
       async login(username, password){
-          
+
     }
  }
 
  const controller = new Controller();
  controller.createController();
  module.exports = controller;
-
- 

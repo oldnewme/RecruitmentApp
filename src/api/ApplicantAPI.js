@@ -1,12 +1,12 @@
 const express = require('express');
 const controller = require('../controller/Controller');
 const ApplicantDTO = require('../dto/ApplicantDTO');
-//const ErrorHandler = require('./error/errorHandler');
+const ErrorHandler = require('./error/errorHandler');
 
 class ApplicantAPI {
   constructor() {
     this.router = express.Router();
-    //this.errorHandler = new ErrorHandler();
+    this.errorHandler = new ErrorHandler();
   }
 
   /**
@@ -35,9 +35,10 @@ class ApplicantAPI {
         await controller.signup(applicantDTO);
         return res.status(200).json(applicantDTO)
         } catch (error) {
-          console.log('api layer');
-          //let error = this.errorHandler.handleError(route);
-          res.status(401).json({error:error.message}); //res.status(401).json(error);
+          console.log('\napi layer');
+          console.log(error);
+          let customError = this.errorHandler.handleError(route, error);
+          res.status(401).json(customError);
         }
       });
 
