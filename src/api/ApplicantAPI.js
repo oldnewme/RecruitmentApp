@@ -1,8 +1,7 @@
 const express = require('express');
-const { errorFromList } = require('verror');
 const controller = require('../controller/Controller');
 const ApplicantDTO = require('../dto/ApplicantDTO');
-const Applicant = require('../model/Applicant');
+const Authorization = require('./auth/Authorization');
 
 class ApplicantAPI {
   constructor() {
@@ -39,33 +38,26 @@ class ApplicantAPI {
         }
       });
 
-    this.router.post('/login', async (req, res, next) => {
-      // validate
-      // if !valid res.status(400).json(error)
-
-      const { email, password } = req.body;
-      Applicant.findAll({
-        where:{
-          email
-        }
-      }).then(applicant => {
-        if(!user.length){
-          errors.email = 'User was not found';
-          return res.status(404).json(errors);
-        }
-        
+      this.router.get('/protected', Authorization.authenticateToken, (req, res) =>{
+        res.json('Allowed')
       })
 
-      
+      this.router.post('/login', async (req, res) => {
+        const applicant = await controller.getApplicant(req.body.username);
+        if(!applicant){
+          return res.status(400).send('Cannot find user');
+        }
+          if(applicant.password == req.body.password){
+            const user = {username:req.body.username}
+            const accessToken = Authorization.generateAccessToken(user);
+            const refreshToken = Authorization.generateRefreshToken(user);
 
-      const user = controller.login(req.body.username, req.body.password);
-
-      res.status(200).json({ msg: user.username });
-    });
-
-
+            res.json({username:applicant.username, accessToken: accessToken, refreshToken: refreshToken })
+          } else{
+            res.status(401).send('incorrect password')
+          }
+      });
   }
-
-}
+};
 
 module.exports = ApplicantAPI;

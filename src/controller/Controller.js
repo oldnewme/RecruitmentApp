@@ -31,14 +31,13 @@ const applicants = require('../integration/ApplicantDB');
           try {
             return await this.applicationDAO.createUser(applicantDTO);
           } catch (error) {
-            // console.log(error.errors[0].message)
             console.log(error)
             throw new Error(error.message)
           }  
       }
 
-      async login(username, password){
-          
+      async getApplicant(username){
+          return await this.applicationDAO.getApplicant(username)
     }
  }
 
