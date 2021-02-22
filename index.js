@@ -2,6 +2,10 @@ const path = require('path');
 const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
+var cors = require('cors')
+app.use(cors())
+
+// logging
 const morgan = require('morgan');
 
 require('dotenv-safe').config({
@@ -12,21 +16,14 @@ require('dotenv-safe').config({
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+
 const cookieParser = require('cookie-parser');
-app.use(bodyParser.json());
 
 app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-
-app.post('/login', (req, res) => {
-  const user = { name: req.body.username };
-  accessToken = authorization.getToken(user);
-  res.json({accessToken:accessToken});
-})
-
 
 const server = app.listen(process.env.SERVER_PORT,
   process.env.SERVER_HOST, () => {
