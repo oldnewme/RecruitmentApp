@@ -8,7 +8,7 @@ app.use(cors())
 // logging
 const morgan = require('morgan');
 
-require('dotenv-safe').config({
+require('dotenv-safe').config({allowEmptyValues: true,
   path: path.join(APP_ROOT_DIR, '.env'),
   example: path.join(APP_ROOT_DIR, '.env.example')
 });
