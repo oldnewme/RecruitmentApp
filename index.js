@@ -25,9 +25,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-const server = app.listen(process.env.SERVER_PORT,
-  process.env.SERVER_HOST, () => {
-  console.log(`Example app listening at http://localhost:${process.env.SERVER_PORT}`)
+const server = app.listen(/*process.env.SERVER_PORT,
+  process.env.SERVER_HOST*/process.env.PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT}`)
 })
 // logging 
 app.use(morgan('combined'));
