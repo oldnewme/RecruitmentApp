@@ -2,10 +2,12 @@ const express = require('express');
 const controller = require('../controller/Controller');
 const ApplicantDTO = require('../dto/ApplicantDTO');
 const Authorization = require('./auth/Authorization');
+const ErrorHandler = require('./error/errorHandler');
 
 class ApplicantAPI {
   constructor() {
     this.router = express.Router();
+    this.errorHandler = new ErrorHandler();
   }
 
   /**
@@ -26,15 +28,18 @@ class ApplicantAPI {
     /**
      * route to create a new account
      */
-    this.router.post('/signup',
+     let route = '/signup';
+    this.router.post(route,
       async (req, res) => {
         try {
         const applicantDTO = new ApplicantDTO(req.body);
         await controller.signup(applicantDTO);
         return res.status(200).json(applicantDTO)
         } catch (error) {
-          console.log('api layer')
-          res.status(401).json({error:error.message})
+          console.log('\napi layer');
+          console.log(error);
+          let customError = this.errorHandler.handleError(route, error);
+          res.status(401).json(customError);
         }
       });
 

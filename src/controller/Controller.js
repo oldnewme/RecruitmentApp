@@ -32,7 +32,7 @@ const applicants = require('../integration/ApplicantDB');
             return await this.applicationDAO.createUser(applicantDTO);
           } catch (error) {
             console.log(error)
-            throw new Error(error.message)
+            throw error;
           }  
       }
 
@@ -44,5 +44,3 @@ const applicants = require('../integration/ApplicantDB');
  const controller = new Controller();
  controller.createController();
  module.exports = controller;
-
- 

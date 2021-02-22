@@ -17,19 +17,19 @@ class ApplicationDAO {
     }
     async createTables() {
       await this.database.authenticate();
-      await this.database.sync({force: false});     
+      await this.database.sync({force: false});
   }
-  
+
   async createUser(applicantDTO){
     if(validator.isEmail(applicantDTO.email)){
     return await Applicant.create({firstName: applicantDTO.firstName,
-      lastName: applicantDTO.lastName, 
+      lastName: applicantDTO.lastName,
       email: applicantDTO.email,
       dob: applicantDTO.dob,
       username: applicantDTO.username,
       password: /*bcrypt.hashSync(applicantDTO.password, 10)*/applicantDTO.password});
     } else{
-      throw new Error('email is invalid')
+      throw new Error('email is invalid');
     }
 
   }
