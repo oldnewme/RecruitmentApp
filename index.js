@@ -2,6 +2,8 @@ const path = require('path');
 const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
+var cors = require('cors')
+app.use(cors())
 
 // logging
 const morgan = require('morgan');
