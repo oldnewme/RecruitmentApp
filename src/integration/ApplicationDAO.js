@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 class ApplicationDAO {
     constructor(){
@@ -26,12 +27,15 @@ class ApplicationDAO {
       email: applicantDTO.email,
       dob: applicantDTO.dob,
       username: applicantDTO.username,
-      password: applicantDTO.password});
+      password: /*bcrypt.hashSync(applicantDTO.password, 10)*/applicantDTO.password});
     } else{
       throw new Error('email is invalid');
     }
 
+  }
 
+  async getApplicant(username){
+    return await Applicant.findOne({ where: { username: username}})
   }
 
 }

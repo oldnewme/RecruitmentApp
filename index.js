@@ -2,9 +2,13 @@ const path = require('path');
 const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
+var cors = require('cors')
+app.use(cors())
+
+// logging
 const morgan = require('morgan');
 
-require('dotenv-safe').config({
+require('dotenv-safe').config({allowEmptyValues: true,
   path: path.join(APP_ROOT_DIR, '.env'),
   example: path.join(APP_ROOT_DIR, '.env.example')
 });
@@ -12,8 +16,8 @@ require('dotenv-safe').config({
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+
 const cookieParser = require('cookie-parser');
-app.use(bodyParser.json());
 
 app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 
@@ -21,18 +25,11 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.post('/login', (req, res) => {
-  const user = { name: req.body.username };
-  accessToken = authorization.getToken(user);
-  res.json({accessToken:accessToken});
+const server = app.listen(/*process.env.SERVER_PORT,
+  process.env.SERVER_HOST*/process.env.PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT}`)
 })
-
-
-const server = app.listen(process.env.SERVER_PORT,
-  process.env.SERVER_HOST, () => {
-  console.log(`Example app listening at http://localhost:${process.env.SERVER_PORT}`)
-})
-// logging 
+// logging
 app.use(morgan('combined'));
 
 // so u can use class
@@ -47,7 +44,7 @@ app.use((req, res, next) =>{
 });
 
 // other errors
-app.use((error, req, res, next) =>{ 
+app.use((error, req, res, next) =>{
   res.status(error.status || 500);
   res.json({
     error:{
