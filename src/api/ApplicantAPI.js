@@ -26,42 +26,49 @@ class ApplicantAPI {
 
   async registerHandler() {
     /**
-     * route to create a new account
+     * route to create a new account or log in
      */
-     let route = '/signup';
-    this.router.post(route,
+    const signupRoute = '/signup';
+    const loginRoute = '/login';
+    const protectedRoute = '/protected';
+
+    this.router.post(signupRoute,
       async (req, res) => {
         try {
         const applicantDTO = new ApplicantDTO(req.body);
         await controller.signup(applicantDTO);
         return res.status(200).json(applicantDTO)
         } catch (error) {
-          console.log('\napi layer');
-          console.log(error);
-          let customError = this.errorHandler.handleError(route, error);
-          res.status(401).json(customError);
+          res.status(401).json(this.errorHandler.handleError(signupRoute, error));
         }
       });
 
-      this.router.get('/protected', Authorization.authenticateToken, (req, res) =>{
+      this.router.get(protectedRoute, Authorization.authenticateToken, (req, res) =>{
         res.json('Allowed')
       })
 
-      this.router.post('/login', async (req, res) => {
-        const applicant = await controller.getApplicant(req.body.username);
-        if(!applicant){
-          return res.status(400).send('Cannot find user');
-        }
+      this.router.post(loginRoute, async (req, res) => {
+
+        try{
+          const applicant = await controller.getApplicant(req.body.username);
+
           if(applicant.password == req.body.password){
             const user = {username:req.body.username}
             const accessToken = Authorization.generateAccessToken(user);
             const refreshToken = Authorization.generateRefreshToken(user);
 
             res.json({username:applicant.username, accessToken: accessToken, refreshToken: refreshToken })
-          } else{
-            res.status(401).send('incorrect password')
           }
-      });
+          else{
+            throw new Error('Invalid password');
+         }
+        }
+
+        catch(error){
+          return res.status(401).json(this.errorHandler.handleError(loginRoute, error));
+        }
+      }
+    );
   }
 };
 
