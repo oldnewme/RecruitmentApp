@@ -29,7 +29,7 @@ const server = app.listen(/*process.env.SERVER_PORT,
   process.env.SERVER_HOST*/process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`)
 })
-// logging 
+// logging
 app.use(morgan('combined'));
 
 // so u can use class
@@ -44,7 +44,7 @@ app.use((req, res, next) =>{
 });
 
 // other errors
-app.use((error, req, res, next) =>{ 
+app.use((error, req, res, next) =>{
   res.status(error.status || 500);
   res.json({
     error:{

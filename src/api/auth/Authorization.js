@@ -36,20 +36,4 @@ class Authorization {
 
 }
 
-
-
-
-
-
-//const user = {username:req.body.username}
-//const accessToken = generateAccessToken(user);
-// const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
-
-
-// module.exports = {
-//     authenticateToken,
-//     generateAccessToken,
-//     generateRefreshToken
-//  }
 module.exports = Authorization;

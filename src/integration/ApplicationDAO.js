@@ -45,12 +45,20 @@ class ApplicationDAO {
 
   }
   
-  /**
-   * Gets an applicant from the database given a username
-   * @param {Username} username the username of the Applicant that is wanted
-   */
+/**
+* return an applicant from the DB that matches with the specified username.
+* @param {Username} username the username of the Applicant that is wanted
+* @return the applicant object with details from the database
+* @throw an error if the user does not exist
+*/
   async getApplicant(username){
-    return await Applicant.findOne({ where: { username: username}})
+    let foundApplicant = await Applicant.findOne({where: {username: username}});
+    if(foundApplicant){
+      return foundApplicant;
+    }
+    else {
+      throw new Error('The specified username does not exist.');
+    }
   }
 
 }

@@ -31,9 +31,8 @@ const applicants = require('../integration/ApplicantDB');
           try {
             return await this.applicationDAO.createUser(applicantDTO);
           } catch (error) {
-            console.log(error)
             throw error;
-          }  
+          }
       }
 
       /**
@@ -42,7 +41,12 @@ const applicants = require('../integration/ApplicantDB');
        * the person to be retrieved from the database
        */
       async getApplicant(username){
+        try{
           return await this.applicationDAO.getApplicant(username)
+        }
+        catch(error){
+          throw error;
+        }
     }
  }
 
