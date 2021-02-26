@@ -43,7 +43,7 @@ class ApplicantAPI {
         }
       });
 
-      this.router.get('/protected', Authorization.authenticateToken, (req, res) =>{
+      this.router.get('/myapplication', Authorization.authenticateToken, (req, res) =>{
         res.json('Allowed')
       })
 
@@ -56,7 +56,7 @@ class ApplicantAPI {
             const user = {username:req.body.username}
             const accessToken = Authorization.generateAccessToken(user);
             const refreshToken = Authorization.generateRefreshToken(user);
-
+            
             res.json({username:applicant.username, accessToken: accessToken, refreshToken: refreshToken })
           } else{
             res.status(401).send('incorrect password')
