@@ -4,6 +4,10 @@ const ApplicantDTO = require('../dto/ApplicantDTO');
 const Authorization = require('./auth/Authorization');
 const ErrorHandler = require('./error/errorHandler');
 
+
+/**
+ * Class represents the REST API with endpoints related to applicants
+ */
 class ApplicantAPI {
   constructor() {
     this.router = express.Router();
@@ -11,25 +15,29 @@ class ApplicantAPI {
   }
 
   /**
-   * @return {string} The URL paths handled by this request handler.
+   * @return {string} The URL path corresponding to this api.
    */
   get path() {
     return ApplicantAPI.APPLICANT_API_PATH;
   }
 
   /**
-   * @return {string} The URL paths handled by this request handler.
+   * @return {string} The URL paths corresponding to the applicant requesthandler.
    */
   static get APPLICANT_API_PATH() {
     return '/api/applicant';
   }
-
+  /**
+   * Used to register handlers defined below
+   */
   async registerHandler() {
+
     /**
-     * route to create a new account
+     * Route creates a user given som parameters in the request body
+     * return: 200: The user was sucessfully created
+     *         401: user was not sucessfully created
      */
-     let route = '/signup';
-    this.router.post(route,
+    this.router.post('/signup',
       async (req, res) => {
         try {
         const applicantDTO = new ApplicantDTO(req.body);
@@ -43,10 +51,19 @@ class ApplicantAPI {
         }
       });
 
+      /**
+       * Route symbolizes a restricted path to prove that authorization works
+       */
       this.router.get('/myapplication', Authorization.authenticateToken, (req, res) =>{
         res.json('Allowed')
       })
 
+      /**
+       * Route logs in a user given som credentials and returns 
+       * username, accesstoken and refreshtoken
+       * return 400: The user doesn't exist.
+       *        401: The user was not authenticated.
+       */
       this.router.post('/login', async (req, res) => {
         const applicant = await controller.getApplicant(req.body.username);
         if(!applicant){

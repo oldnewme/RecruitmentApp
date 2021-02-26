@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 class Authorization {
     /**
      * 
-     * @param {*} req 
-     * @param {*} res 
-     * @param {*} next 
+     * @param {Request} req The express Request object
+     * @param {Response} res The express Rsponse object
+     * @param {Next} next The express call to the next request
      */
     static authenticateToken(req, res, next){
         const authHeader = req.headers['authorization'];
@@ -20,15 +20,15 @@ class Authorization {
 
     /**
      * 
-     * @param {*} user 
+     * @param {Applicant} user The applicant for which to generate an accessToken
      */
     static generateAccessToken(user){
-        return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn:'15m'})
+        return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn:'15m'});
     }
     
     /**
      * 
-     * @param {*} user 
+     * @param {Applicant} user The applicant for which to generate the refreshToken
      */
     static generateRefreshToken(user){
         return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);

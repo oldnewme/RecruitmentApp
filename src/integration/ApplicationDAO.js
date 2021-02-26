@@ -4,7 +4,14 @@ const Recruiter = require('../model/Recruiter');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
+/**
+ * Class that handles interactions with database
+ */
 class ApplicationDAO {
+  /**
+   * Constructor that sets up connection to database and creates
+   * the tables corresponding to users of the system
+   */
     constructor(){
         this.database = new Sequelize(
             process.env.DB_NAME,
@@ -20,6 +27,10 @@ class ApplicationDAO {
       await this.database.sync({force: false});
   }
 
+  /**
+   * Creates a user in the database
+   * @param {ApplicantDTO} applicantDTO the object containing information about an Applicant
+   */
   async createUser(applicantDTO){
     if(validator.isEmail(applicantDTO.email)){
     return await Applicant.create({firstName: applicantDTO.firstName,
@@ -34,6 +45,10 @@ class ApplicationDAO {
 
   }
   
+  /**
+   * Gets an applicant from the database given a username
+   * @param {Username} username the username of the Applicant that is wanted
+   */
   async getApplicant(username){
     return await Applicant.findOne({ where: { username: username}})
   }

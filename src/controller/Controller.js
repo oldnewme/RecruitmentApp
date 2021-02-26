@@ -36,6 +36,11 @@ const applicants = require('../integration/ApplicantDB');
           }  
       }
 
+      /**
+       * Retrieves a user from the database
+       * @param {Username} username The username of the of 
+       * the person to be retrieved from the database
+       */
       async getApplicant(username){
           return await this.applicationDAO.getApplicant(username)
     }
