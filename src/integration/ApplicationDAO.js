@@ -1,6 +1,8 @@
 const Sequelize = require('sequelize');
 const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
+const Person = require('../model/Person');
+const Role = require('../model/Role');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
@@ -21,6 +23,8 @@ class ApplicationDAO {
         );
         Applicant.createModel(this.database);
         Recruiter.createModel(this.database);
+        Person.createModel(this.database);
+        Role.createModel(this.database);
     }
     async createTables() {
       await this.database.authenticate();
