@@ -2,18 +2,18 @@ const Sequelize = require('sequelize');
 const Person = require('./Person');
 
 /**
- * A user of the chat application.
+ * A role that a person can have application.
  */
 class Role extends Sequelize.Model {
   /**
-   * The name of the User model.
+   * The name of the Role model.
    */
   static get ROLE_MODEL_NAME() {
     return 'role';
   }
 
   /**
-   * Defines the person entity.
+   * Defines the role entity.
    *
    * @param {Sequelize} sequelize The sequelize object.
    * @return {Model} A sequelize model describing the Role entity.

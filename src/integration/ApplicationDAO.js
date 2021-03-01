@@ -5,6 +5,9 @@ const Person = require('../model/Person');
 const Role = require('../model/Role');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const Availability = require('../model/Availability');
+const Competence = require('../model/Competence');
+const CompetenceProfile = require('../model/CompetenceProfile');
 
 /**
  * Class that handles interactions with database
@@ -25,6 +28,9 @@ class ApplicationDAO {
         Recruiter.createModel(this.database);
         Role.createModel(this.database);
         Person.createModel(this.database);
+        Availability.createModel(this.database);
+        Competence.createModel(this.database);
+        CompetenceProfile.createModel(this.database);
     }
     async createTables() {
       await this.database.authenticate();
