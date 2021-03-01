@@ -31,7 +31,7 @@ class CompetenceProfile extends Sequelize.Model {
         
     );
     CompetenceProfile.belongsTo(Person);
-    CompetenceProfile.hasMany(Competence);
+    CompetenceProfile.belongsTo(Competence);
     return CompetenceProfile;
   }
 
