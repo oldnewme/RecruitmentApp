@@ -23,8 +23,8 @@ class ApplicationDAO {
         );
         Applicant.createModel(this.database);
         Recruiter.createModel(this.database);
-        Person.createModel(this.database);
         Role.createModel(this.database);
+        Person.createModel(this.database);
     }
     async createTables() {
       await this.database.authenticate();

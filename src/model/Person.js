@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const Role = require('./Role');
 
 /**
  * A user of the chat application.
@@ -51,8 +52,8 @@ class Person extends Sequelize.Model {
         },
         {sequelize, modelName: Person.PERSON_MODEL_NAME, paranoid: true}
     );
+    Person.belongsTo(Role);
     return Person;
   }
 }
-
 module.exports = Person;
