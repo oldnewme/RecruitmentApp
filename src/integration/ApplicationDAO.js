@@ -1,8 +1,13 @@
 const Sequelize = require('sequelize');
 const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
+const Person = require('../model/Person');
+const Role = require('../model/Role');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const Availability = require('../model/Availability');
+const Competence = require('../model/Competence');
+const CompetenceProfile = require('../model/CompetenceProfile');
 
 /**
  * Class that handles interactions with database
@@ -21,6 +26,11 @@ class ApplicationDAO {
         );
         Applicant.createModel(this.database);
         Recruiter.createModel(this.database);
+        Role.createModel(this.database);
+        Person.createModel(this.database);
+        Availability.createModel(this.database);
+        Competence.createModel(this.database);
+        CompetenceProfile.createModel(this.database);
     }
     async createTables() {
       await this.database.authenticate();
@@ -44,6 +54,24 @@ class ApplicationDAO {
     }
 
   }
+
+  async createPerson(personDTO, roleId){
+    if(validator.isEmail(personDTO.email)){
+      
+      const createdPerson = await Person.create({name: personDTO.name,
+                                                surname: personDTO.surname,
+                                                email: personDTO.email,
+                                                ssn: personDTO.ssn,
+                                                username: personDTO.username,
+                                                password: personDTO.password});
+      await createdPerson.setRole(await Role.findByPk(roleId));
+      return createdPerson;
+
+    } else{
+      throw new Error('email is invalid');
+    }
+
+  }
   
 /**
 * return an applicant from the DB that matches with the specified username.
@@ -60,6 +88,22 @@ class ApplicationDAO {
       throw new Error('The specified username does not exist.');
     }
   }
+
+/**
+* return an person from the DB that matches with the specified username.
+* @param {Username} username the username of the Person that is wanted
+* @return the person object with details from the database
+* @throw an error if the user does not exist
+*/
+async getPerson(username){
+  let foundPerson = await Person.findOne({where: {username: username}});
+  if(foundPerson){
+    return foundPerson;
+  }
+  else {
+    throw new Error('The specified username does not exist.');
+  }
+}
 
 }
 

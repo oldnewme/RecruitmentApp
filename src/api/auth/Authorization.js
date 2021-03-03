@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const controller = require('../../controller/Controller');
 
 class Authorization {
     /**
@@ -17,6 +18,19 @@ class Authorization {
             next();
         })
     }
+
+    static authenticateRole(roleId){    
+        return async (req, res, next) => {
+            const person = await controller.getPerson(req.user.username);
+            const personRole = await person.getRole();
+            if(personRole.id !== roleId){
+                res.status(401);
+                console.log("input roleId: " + personRole.id);
+                return res.send('You do not have permission to see this page');
+            }
+            next();
+    }    
+}
 
     /**
      * 
