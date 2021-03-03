@@ -54,6 +54,24 @@ class ApplicationDAO {
     }
 
   }
+
+  async createPerson(personDTO, roleId){
+    if(validator.isEmail(personDTO.email)){
+      
+      const createdPerson = await Person.create({name: personDTO.name,
+                                                surname: personDTO.surname,
+                                                email: personDTO.email,
+                                                ssn: personDTO.ssn,
+                                                username: personDTO.username,
+                                                password: personDTO.password});
+      await createdPerson.setRole(await Role.findByPk(roleId));
+      return createdPerson;
+
+    } else{
+      throw new Error('email is invalid');
+    }
+
+  }
   
 /**
 * return an applicant from the DB that matches with the specified username.
@@ -70,6 +88,22 @@ class ApplicationDAO {
       throw new Error('The specified username does not exist.');
     }
   }
+
+/**
+* return an person from the DB that matches with the specified username.
+* @param {Username} username the username of the Person that is wanted
+* @return the person object with details from the database
+* @throw an error if the user does not exist
+*/
+async getPerson(username){
+  let foundPerson = await Person.findOne({where: {username: username}});
+  if(foundPerson){
+    return foundPerson;
+  }
+  else {
+    throw new Error('The specified username does not exist.');
+  }
+}
 
 }
 

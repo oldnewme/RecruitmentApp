@@ -35,6 +35,33 @@ const applicants = require('../integration/ApplicantDB');
           }
       }
 
+      
+      /**
+      * Signs up new user
+      * @param {PersonDTO} personDTO dto containing user information
+      */
+     async signupPerson(personDTO, roleId){
+      try {
+        return await this.applicationDAO.createPerson(personDTO, roleId);
+      } catch (error) {
+        throw error;
+      }
+  }
+
+       /**
+       * Retrieves a person from the database
+       * @param {Username} username The username of the of 
+       * the person to be retrieved from the database
+       */
+      async getPerson(username){
+        try{
+          return await this.applicationDAO.getPerson(username)
+        }
+        catch(error){
+          throw error;
+        }
+    }
+
       /**
        * Retrieves a user from the database
        * @param {Username} username The username of the of 
