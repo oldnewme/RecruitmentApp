@@ -4,9 +4,9 @@
 
 class RecruiterDTO{
     /**
-     * 
+     *
      * @param {RecruiterDTO} recruiterDTO a data transfer object containing info needed
-     * to register an Recruiter 
+     * to register an Recruiter
      */
 
 class RecruiterDTO{

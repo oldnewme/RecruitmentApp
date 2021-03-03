@@ -33,12 +33,12 @@ const applicants = require('../integration/ApplicantDB');
           } catch (error) {
             console.log(error)
             throw error;
-          }  
+          }
       }
 
       /**
        * Retrieves a user from the database
-       * @param {Username} username The username of the of 
+       * @param {Username} username The username of the of
        * the person to be retrieved from the database
        */
       async getApplicant(username){

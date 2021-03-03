@@ -44,7 +44,7 @@ class ApplicationDAO {
     }
 
   }
-  
+
   /**
    * Gets an applicant from the database given a username
    * @param {Username} username the username of the Applicant that is wanted
