@@ -57,7 +57,7 @@ class ApplicationDAO {
 
   async createPerson(personDTO, roleId){
     if(validator.isEmail(personDTO.email)){
-      
+
       const createdPerson = await Person.create({name: personDTO.name,
                                                 surname: personDTO.surname,
                                                 email: personDTO.email,
@@ -72,7 +72,7 @@ class ApplicationDAO {
     }
 
   }
-  
+
 /**
 * return an applicant from the DB that matches with the specified username.
 * @param {Username} username the username of the Applicant that is wanted

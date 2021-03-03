@@ -3,7 +3,7 @@ const controller = require('../../controller/Controller');
 
 class Authorization {
     /**
-     * 
+     *
      * @param {Request} req The express Request object
      * @param {Response} res The express Rsponse object
      * @param {Next} next The express call to the next request
@@ -19,7 +19,7 @@ class Authorization {
         })
     }
 
-    static authenticateRole(roleId){    
+    static authenticateRole(roleId){
         return async (req, res, next) => {
             const person = await controller.getPerson(req.user.username);
             const personRole = await person.getRole();
@@ -29,19 +29,19 @@ class Authorization {
                 return res.send('You do not have permission to see this page');
             }
             next();
-    }    
+    }
 }
 
     /**
-     * 
+     *
      * @param {Applicant} user The applicant for which to generate an accessToken
      */
     static generateAccessToken(user){
         return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn:'15m'});
     }
-    
+
     /**
-     * 
+     *
      * @param {Applicant} user The applicant for which to generate the refreshToken
      */
     static generateRefreshToken(user){

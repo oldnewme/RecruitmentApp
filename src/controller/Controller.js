@@ -35,7 +35,7 @@ const applicants = require('../integration/ApplicantDB');
           }
       }
 
-      
+
       /**
       * Signs up new user
       * @param {PersonDTO} personDTO dto containing user information
@@ -50,7 +50,7 @@ const applicants = require('../integration/ApplicantDB');
 
        /**
        * Retrieves a person from the database
-       * @param {Username} username The username of the of 
+       * @param {Username} username The username of the of
        * the person to be retrieved from the database
        */
       async getPerson(username){
@@ -64,7 +64,7 @@ const applicants = require('../integration/ApplicantDB');
 
       /**
        * Retrieves a user from the database
-       * @param {Username} username The username of the of 
+       * @param {Username} username The username of the of
        * the person to be retrieved from the database
        */
       async getApplicant(username){
