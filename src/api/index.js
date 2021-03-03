@@ -1,5 +1,6 @@
 const RecruiterAPI = require('./RecruiterAPI');
 const ApplicantAPI = require('./ApplicantAPI');
+const PersonAPI = require('./PersonAPI');
 
 /**
  * Class that is used to load all requesthandlers
@@ -37,5 +38,6 @@ const ApplicantAPI = require('./ApplicantAPI');
  const loader = new RequestHandlerLoader();
  loader.addRequestHandler(new ApplicantAPI());
  loader.addRequestHandler(new RecruiterAPI());
+ loader.addRequestHandler(new PersonAPI());
 
  module.exports = loader;

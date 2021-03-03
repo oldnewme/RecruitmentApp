@@ -1,14 +1,14 @@
 const express = require('express');
 const controller = require('../controller/Controller');
-const ApplicantDTO = require('../dto/ApplicantDTO');
+const PersonDTO = require('../dto/PersonDTO');
 const Authorization = require('./auth/Authorization');
 const ErrorHandler = require('./error/errorHandler');
 
 
 /**
- * Class represents the REST API with endpoints related to applicants
+ * Class represents the REST API with endpoints related to Persons
  */
-class ApplicantAPI {
+class PersonAPI {
   constructor() {
     this.router = express.Router();
     this.errorHandler = new ErrorHandler();
@@ -18,14 +18,14 @@ class ApplicantAPI {
    * @return {string} The URL path corresponding to this api.
    */
   get path() {
-    return ApplicantAPI.APPLICANT_API_PATH;
+    return PersonAPI.PERSON_API_PATH;
   }
 
   /**
-   * @return {string} The URL paths corresponding to the applicant requesthandler.
+   * @return {string} The URL paths corresponding to the Person requesthandler.
    */
-  static get APPLICANT_API_PATH() {
-    return '/api/applicant';
+  static get PERSON_API_PATH() {
+    return '/api/person';
   }
   /**
    * Used to register handlers defined below
@@ -45,9 +45,10 @@ class ApplicantAPI {
     this.router.post(signupRoute,
       async (req, res) => {
         try {
-        const applicantDTO = new ApplicantDTO(req.body);
-        await controller.signup(applicantDTO);
-        return res.status(200).json(applicantDTO)
+        const personDTO = new PersonDTO(req.body);
+        const role = req.body.roleId;
+        await controller.signupPerson(personDTO, role);
+        return res.status(200).json(personDTO)
         } catch (error) {
           res.status(401).json(this.errorHandler.handleError(signupRoute, error));
         }
@@ -58,7 +59,7 @@ class ApplicantAPI {
        /**
        * Route symbolizes a restricted path to prove that authorization works
        */
-      this.router.get(protectedRoute, Authorization.authenticateToken, (req, res) =>{
+      this.router.get(protectedRoute, Authorization.authenticateToken, Authorization.authenticateRole(1), (req, res) =>{
         res.json('Allowed')
       })
 
@@ -71,14 +72,14 @@ class ApplicantAPI {
       this.router.post(loginRoute, async (req, res) => {
 
         try{
-          const applicant = await controller.getApplicant(req.body.username);
+          const person = await controller.getPerson(req.body.username);
 
-          if(applicant.password == req.body.password){
+          if(person.password == req.body.password){
             const user = {username:req.body.username}
             const accessToken = Authorization.generateAccessToken(user);
             const refreshToken = Authorization.generateRefreshToken(user);
             
-            res.json({username:applicant.username, accessToken: accessToken, refreshToken: refreshToken })
+            res.json({username:person.username, accessToken: accessToken, refreshToken: refreshToken })
           }
           else{
             throw new Error('Invalid password');
@@ -93,4 +94,4 @@ class ApplicantAPI {
   }
 };
 
-module.exports = ApplicantAPI;
+module.exports = PersonAPI;

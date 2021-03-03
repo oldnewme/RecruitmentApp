@@ -1,61 +1,53 @@
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const passportJWT = require('passport-jwt');
-const Applicant = require('../model/Applicant');
+const controller = require('../../controller/Controller');
 
-// to extract token
-let ExtractJwt = passportJWT.ExtractJwt;
-// JwtStrategy which is the strategy for the authentication
-let JwtStrategy = passportJWT.Strategy;
-let jwtOptions = {};
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-// put in .env
-jwtOptions.secretOrKey = 'secret';
-
-// create some helper functions to work on the database
-  const getAllApplicants = async () => {
-    return await Applicant.findAll();
-  };
-  const getApplicant = async obj => {
-    return await Applicant.findOne({
-    where: obj,
-  });
-  };
-
-// lets create our strategy for web token
-let strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-    console.log('payload received', jwt_payload);
-    let applicant = getApplicant({ id: jwt_payload.id });
-    if (applicant) {
-      next(null, user);
-    } else {
-      next(null, false);
+class Authorization {
+    /**
+     * 
+     * @param {Request} req The express Request object
+     * @param {Response} res The express Rsponse object
+     * @param {Next} next The express call to the next request
+     */
+    static authenticateToken(req, res, next){
+        const authHeader = req.headers['authorization'];
+        const token =authHeader && authHeader.split(' ')[1];
+        if(token == null) return res.sendStatus(401);
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,user) => {
+            if(err) return res.sendStatus(403);
+            req.user = user;
+            next();
+        })
     }
-  });
-  // use the strategy
-  passport.use(strategy);
 
-// class Authorization {
+    static authenticateRole(roleId){    
+        return async (req, res, next) => {
+            const person = await controller.getPerson(req.user.username);
+            const personRole = await person.getRole();
+            if(personRole.id !== roleId){
+                res.status(401);
+                console.log("input roleId: " + personRole.id);
+                return res.send('You do not have permission to see this page');
+            }
+            next();
+    }    
+}
 
-//     static getToken(user) {
-//         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-//         this.user = user;
-//         return accessToken;
-//     }
+    /**
+     * 
+     * @param {Applicant} user The applicant for which to generate an accessToken
+     */
+    static generateAccessToken(user){
+        return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn:'15m'});
+    }
+    
+    /**
+     * 
+     * @param {Applicant} user The applicant for which to generate the refreshToken
+     */
+    static generateRefreshToken(user){
+        return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    }
 
-//     static authenticateToken(req, res, next) {
-//         const authHeader = req.headers['authorization'];
-//         const token = authHeader && authHeader.split(' '[1]);
-//         console.log(token)
-//         if (token == null) return res.sendStatus(401);
-        
-//         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//             console.log(req.headers)
-//             console.log(this.user);
-//             if (err) return res.sendStatus(403);
-//             req.user = this.user;
-//             next();
-//         });
-//     }
-// }
+}
+
 module.exports = Authorization;
