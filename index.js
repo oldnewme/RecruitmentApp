@@ -5,8 +5,9 @@ const app = express();
 var cors = require('cors')
 app.use(cors())
 
-// logging
+//for logging
 const morgan = require('morgan');
+const fs = require('fs');
 
 require('dotenv-safe').config({allowEmptyValues: true,
   path: path.join(APP_ROOT_DIR, '.env'),
@@ -29,9 +30,12 @@ const server = app.listen(/*process.env.SERVER_PORT,
   process.env.SERVER_HOST*/process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`)
 })
-// logging
-app.use(morgan('combined'));
 
+// logging, we can use morgan tokens to specify exactly what to log
+app.use(morgan('\nMorgan logged:\nmethod: :method \nin: :url \ncontent length: :res[content-length] \nresponse time: :response-time ms \nstatus: :status\n'));
+app.use(morgan('combined', {
+  stream: fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+}));
 // so u can use class
 const reqHandlerLoader = require('./src/api');
 reqHandlerLoader.loadHandlers(app);
