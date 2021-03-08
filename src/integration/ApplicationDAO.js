@@ -55,6 +55,10 @@ class ApplicationDAO {
 
   }
 
+  async upDateUser() {
+    
+  }
+
   async createPerson(personDTO, roleId){
     if(validator.isEmail(personDTO.email)){
       
@@ -79,13 +83,14 @@ class ApplicationDAO {
 * @return the applicant object with details from the database
 * @throw an error if the user does not exist
 */
-  async getApplicant(username){
-    let foundApplicant = await Applicant.findOne({where: {username: username}});
+  async getApplicant(authorizationString, authorizationType){
+    let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+    let foundApplicant = await Applicant.findOne(whereClause);
     if(foundApplicant){
       return foundApplicant;
     }
     else {
-      throw new Error('The specified username does not exist.');
+      throw new Error('The specified ' + authorizationType + ' does not exist.');
     }
   }
 
@@ -102,6 +107,38 @@ async getPerson(username){
   }
   else {
     throw new Error('The specified username does not exist.');
+  }
+}
+
+/**
+ * Uppdates the applicant data 
+ * @param {ApplicantDTO} applicantDTO contains applicant data 
+ * @param {JSON} upDatedValues updated applicant data 
+ * @returns 
+ */
+async updateApplicant(applicantDTO, upDatedValues){
+  let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+
+  if(applicant) {
+    if(validator.isEmail(applicant.email)) {
+
+      applicant.firstName = upDatedValues.firstName;
+      applicant.lastName = upDatedValues.lastName;
+      applicant.dob = upDatedValues.dob;
+      if(upDatedValues.email === 'tempString')
+        applicant.username = upDatedValues.username;
+      else
+      applicant.email = upDatedValues.email;
+      
+      await applicant.save();
+      return applicant;
+    }
+    else {
+      throw new Error('email is invalid');
+    }
+  } 
+  else {
+    throw new Error('The specified username does not exist.')
   }
 }
 
