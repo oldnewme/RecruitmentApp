@@ -145,16 +145,20 @@ class ApplicantAPI {
         try{
           var applicant;
           var authorizationType;
-          if(req.body.email === 'tempString') {
-            authorizationType = 'username';
-            applicant = await controller.getApplicant(req.body.username, authorizationType);
+          applicant = await controller.ifApplicantExists(req.body.username, 'username');
+          if(applicant === undefined)
+            applicant = await controller.ifApplicantExists(req.body.email, 'email');
+
+          // if(req.body.email === 'tempString') {
+          //   authorizationType = 'username';
+          //   applicant = await controller.getApplicant(req.body.username, authorizationType);
           
-          }
-          else {
-            authorizationType = 'email';
-            applicant = await controller.getApplicant(req.body.email, authorizationType);
+          // }
+          // else {
+          //   authorizationType = 'email';
+          //   applicant = await controller.getApplicant(req.body.email, authorizationType);
             
-          }
+          // }
 
           if(applicant.password == req.body.password){
             const updatedApplicant = await controller.upDateApplicant(applicant, req.body)

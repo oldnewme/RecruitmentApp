@@ -110,6 +110,15 @@ async getPerson(username){
   }
 }
 
+async getApplicantIfExists(authorizationString, authorizationType) {
+  let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+  let foundApplicant = await Applicant.findOne(whereClause);
+  if(foundApplicant){
+    return foundApplicant;
+  }
+  return undefined;
+}
+
 /**
  * Uppdates the applicant data 
  * @param {ApplicantDTO} applicantDTO contains applicant data 

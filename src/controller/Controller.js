@@ -91,6 +91,10 @@ const applicants = require('../integration/ApplicantDB');
           throw error;
         }
       }
+
+      async ifApplicantExists(authorizationString, authorizationType) {
+        return await this.applicationDAO.getApplicantIfExists(authorizationString, authorizationType)
+      }
  }
 
  const controller = new Controller();
