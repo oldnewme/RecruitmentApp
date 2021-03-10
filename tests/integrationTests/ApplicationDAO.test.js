@@ -1,8 +1,8 @@
-//const mysql = require('mysql');
 const path = require('path');
 const Sequelize = require('sequelize');
 const ApplicationDAO = require('../../src/integration/ApplicationDAO');
 const PersonDTO = require('../../src/dto/PersonDTO');
+const Person = require('../../src/model/Person');
 
 let connection = null;
 let applicationDAO = null;
@@ -11,10 +11,10 @@ const newPerson = new PersonDTO(
   {
     "name": "amoasdfng",
     "surame": "asdf",
-    "email": "aasdf@meme.com",
+    "email": "qqqqqq@meme.com",
     "ssn": "1970-01-01",
     "roleId": "2",
-    "username": "amasfds",
+    "username": "asdfgsdd",
     "password": "password"
   }
 ); //userDTO
@@ -24,8 +24,9 @@ const recruiter = '1';
 
 beforeAll(async () => {
   connection = await connectToDB();
-  //connection.sync({force: false});
-  //await clearDB();
+  applicationDAO = new ApplicationDAO();
+  applicationDAO.setDatabase(connection);
+  //await applicationDAO.destroyPerson(newPerson);
 });
 
 beforeEach(async () => {
@@ -35,20 +36,22 @@ beforeEach(async () => {
   await applicationDAO.createTables();
   await applicationDAO.createPerson(newPerson, applicant); //applicationDAO
 });
-/*
+
 afterEach(async () => {
+  await applicationDAO.destroyPerson(newPerson);
   //await clearDB();
 });
 
 afterAll(async () => {
-  //await clearDB();
+  //await applicationDAO.destroyPerson(newPerson);
   //await connection.destroy();
 });
-*/
+
 describe('tests for getPerson', () => {
   test('existing person', async() => {
     const foundUser = await applicationDAO.getPerson(newPerson.username);
     expect(foundUser.username).toBe(newPerson.username);
+    expect(foundUser.email).toBe(newPerson.email);
   });
 });
 

@@ -42,7 +42,7 @@ class ApplicationDAO {
     }
 
     setDatabase(connection){
-      this.databse = connection;
+      this.database = connection;
       Applicant.createModel(connection);
       Recruiter.createModel(connection);
       Role.createModel(connection);
@@ -91,6 +91,14 @@ class ApplicationDAO {
       throw new Error('email is invalid');
     }
 
+  }
+
+  async destroyPerson(personDTO){
+    await Person.destroy({
+      where: {
+        username: personDTO.username
+      }
+    });
   }
 
 /**
