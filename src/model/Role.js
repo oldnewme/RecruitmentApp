@@ -28,7 +28,7 @@ class Role extends Sequelize.Model {
           },
 
         },
-        {sequelize, modelName: Role.ROLE_MODEL_NAME, paranoid: true}
+        {sequelize, modelName: Role.ROLE_MODEL_NAME, paranoid: false}
         
     );
     

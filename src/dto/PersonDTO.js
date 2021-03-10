@@ -8,11 +8,11 @@ class PersonDTO{
      * @param {PersonDTO} personDTO a data transfer object containing info needed
      * to register an person 
      */
-    constructor({firstName, lastName, email, dob, role, username, password}){
-        this.name = firstName;
-        this.surname = lastName;
+    constructor({name, surname, email, ssn, role, username, password}){
+        this.name = name;
+        this.surname = surname;
         this.email = email;
-        this.ssn = dob;
+        this.ssn = ssn;
         this.roleId = role;
         this.username = username;
         this.password = password;

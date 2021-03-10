@@ -113,13 +113,14 @@ class ApplicationDAO {
 * @return the person object with details from the database
 * @throw an error if the user does not exist
 */
-async getPerson(username){
-  let foundPerson = await Person.findOne({where: {username: username}});
+async getPerson(authorizationString, authorizationType){
+  let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+  let foundPerson = await Person.findOne(whereClause);
   if(foundPerson){
     return foundPerson;
   }
   else {
-    throw new Error('The specified username does not exist.');
+    throw new Error('The specified ' + authorizationType + ' does not exist.');
   }
 }
 
@@ -132,25 +133,48 @@ async getApplicantIfExists(authorizationString, authorizationType) {
   return undefined;
 }
 
+async getPersonIfExists(authorizationString, authorizationType) {
+  let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+  let foundPerson = await Person.findOne(whereClause);
+  if(foundPerson){
+    return foundPerson;
+  }
+  return undefined;
+}
+
 /**
  * Uppdates the applicant data 
  * @param {ApplicantDTO} applicantDTO contains applicant data 
  * @param {JSON} upDatedValues updated applicant data 
  * @returns 
  */
-async updateApplicant(applicant, upDatedValues){
-  //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+  async updateApplicant(applicant, upDatedValues){
+    //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
 
-  applicant.firstName = upDatedValues.firstName;
-  applicant.lastName = upDatedValues.lastName;
-  applicant.dob = upDatedValues.dob;
-  applicant.username = upDatedValues.username;
-  applicant.email = upDatedValues.email;
+    applicant.firstName = upDatedValues.firstName;
+    applicant.lastName = upDatedValues.lastName;
+    applicant.dob = upDatedValues.dob;
+    applicant.username = upDatedValues.username;
+    applicant.email = upDatedValues.email;
+    
+    await applicant.save();
+    return applicant;
+
+  }
+
+  async updatePerson(person, upDatedValues){
+    //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
   
-  await applicant.save();
-  return applicant;
-
-}
+    person.name = upDatedValues.name;
+    person.surname = upDatedValues.surname;
+    person.ssn = upDatedValues.ssn;
+    person.username = upDatedValues.username;
+    person.email = upDatedValues.email;
+    
+    await person.save();
+    return person;
+  
+  }
 
 }
 
