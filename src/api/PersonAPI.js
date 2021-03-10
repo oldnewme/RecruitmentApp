@@ -38,6 +38,7 @@ class PersonAPI {
     const protectedRoute = '/protected';
     const nullCheckerString = '09695060848347644085735346228334752515337078300310219385669578588';
     const updateRoute = '/update';
+    const allLoggedInRoute = '/all-users'
 
 
     /**
@@ -63,7 +64,14 @@ class PersonAPI {
        /**
        * Route symbolizes a restricted path to prove that authorization works
        */
-      this.router.get(protectedRoute, Authorization.authenticateToken, (req, res) =>{
+      this.router.get(protectedRoute, Authorization.authenticateToken, Authorization.authenticateRole(1), (req, res) =>{
+        res.json('Allowed')
+      })
+
+      /**
+       * Route symbolizes a restricted path to prove that authorization works
+       */
+      this.router.get(allLoggedInRoute, Authorization.authenticateToken, (req, res) =>{
         res.json('Allowed')
       })
 

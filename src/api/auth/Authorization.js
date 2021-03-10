@@ -29,7 +29,15 @@ class Authorization {
 
     static authenticateRole(roleId){    
         return async (req, res, next) => {
-            const person = await controller.getPerson(req.user.username);
+            const userAccessToken = req.headers['authorization'].split(" ")[1];
+            const userLogInInfo = this.getUserInfo(userAccessToken);
+            var person;
+
+            if(userLogInInfo.email !== undefined) 
+                person = await controller.getPerson(userLogInInfo.email, "email");
+            else
+                person = await controller.getPerson(userLogInInfo.username, "username");
+
             const personRole = await person.getRole();
             if(personRole.id !== roleId){
                 res.status(401);
