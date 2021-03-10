@@ -14,10 +14,18 @@ class Authorization {
         if(token == null) return res.sendStatus(401);
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,user) => {
             if(err) return res.sendStatus(403);
+            console.log("user: "+user)
             req.user = user;
             next();
         })
     }
+
+    static getUserInfo(token) {
+        var atob = require('atob');
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(atob(base64));
+      }
 
     static authenticateRole(roleId){    
         return async (req, res, next) => {

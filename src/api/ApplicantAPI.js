@@ -92,15 +92,17 @@ class ApplicantAPI {
 
           if(applicant.password == req.body.password){
             const user = userJSON;
+            const accessToken = Authorization.generateAccessToken(user);
+            const refreshToken = Authorization.generateRefreshToken(user);
 
             if(nullRowChecker(applicant)) {
-              const accessToken = Authorization.generateAccessToken(user);
-              const refreshToken = Authorization.generateRefreshToken(user);
+
               
               res.json({userJSON, accessToken: accessToken, refreshToken: refreshToken })
             }
-            else 
-              throw new Error('Incomplete')
+            else
+
+              res.status(401).json({userJSON, accessToken: accessToken, refreshToken: refreshToken })
           }
           else{
             throw new Error('Invalid password');
@@ -135,38 +137,46 @@ class ApplicantAPI {
       else 
         return true;
     }
-
       /**
        * The following route enables the client to
        * update null values in the database
        */
       this.router.post(updateRoute, async (req, res) => {
 
+        const userAccessToken = req.headers['authorization'].split(" ")[1];
+        const userLogInInfo = Authorization.getUserInfo(userAccessToken);  
+
         try{
           var applicant;
-          var authorizationType;
-          applicant = await controller.ifApplicantExists(req.body.username, 'username');
-          if(applicant === undefined)
-            applicant = await controller.ifApplicantExists(req.body.email, 'email');
+          var upDateApplicant;
 
-          // if(req.body.email === 'tempString') {
-          //   authorizationType = 'username';
-          //   applicant = await controller.getApplicant(req.body.username, authorizationType);
-          
-          // }
-          // else {
-          //   authorizationType = 'email';
-          //   applicant = await controller.getApplicant(req.body.email, authorizationType);
-            
-          // }
-
-          if(applicant.password == req.body.password){
-            const updatedApplicant = await controller.upDateApplicant(applicant, req.body)
-            return res.status(200).json(updatedApplicant)
+          //If client logged in with username
+          if(userLogInInfo.email === undefined) {
+            const tempApplicant = await controller.ifApplicantExists(req.body.email, "email")
+            if(tempApplicant !== undefined)
+              throw new error("Entered email already taken")
+            else {
+              applicant = await controller.ifApplicantExists(userLogInInfo.username, 'username');
+              upDateApplicant = await controller.upDateApplicant(applicant, req.body)
+              res.status(200).json(upDateApplicant)
+            }
           }
-          else{
-            throw new Error('Invalid password');
-         }
+
+          //If client loggen in with email
+          else if(userLogInInfo.username === undefined) {
+            const tempApplicant = await controller.ifApplicantExists(req.body.username, "username")
+            if(tempApplicant !== undefined)
+              throw new Error("Entered username already taken")
+            else {
+              applicant = await controller.ifApplicantExists(userLogInInfo.email, 'email');
+              upDateApplicant = await controller.upDateApplicant(applicant, req.body);
+              res.status(200).json(upDateApplicant)
+            }
+          }
+
+          else
+            throw new Error("Unable to verify client")
+          
         }
         catch(error){
           return res.status(401).json(this.errorHandler.handleError(updateRoute, error));

@@ -13,9 +13,13 @@ const CompetenceProfile = require('../model/CompetenceProfile');
  * Class that handles interactions with database
  */
 class ApplicationDAO {
+
+  
   /**
    * Constructor that sets up connection to database and creates
    * the tables corresponding to users of the system
+   * 
+   * 
    */
     constructor(){
         this.database = new Sequelize(
@@ -37,11 +41,14 @@ class ApplicationDAO {
       await this.database.sync({force: false});
   }
 
+  
+
   /**
    * Creates a user in the database
    * @param {ApplicantDTO} applicantDTO the object containing information about an Applicant
    */
   async createUser(applicantDTO){
+
     if(validator.isEmail(applicantDTO.email)){
     return await Applicant.create({firstName: applicantDTO.firstName,
       lastName: applicantDTO.lastName,
@@ -60,6 +67,8 @@ class ApplicationDAO {
   }
 
   async createPerson(personDTO, roleId){
+   
+    
     if(validator.isEmail(personDTO.email)){
       
       const createdPerson = await Person.create({name: personDTO.name,
@@ -67,11 +76,15 @@ class ApplicationDAO {
                                                 email: personDTO.email,
                                                 ssn: personDTO.ssn,
                                                 username: personDTO.username,
-                                                password: personDTO.password});
-      await createdPerson.setRole(await Role.findByPk(roleId));
+                                                password: personDTO.password}, { transaction: t});
+      await createdPerson.setRole(await Role.findByPk(roleId), { transaction: t});
+
+     
+      
       return createdPerson;
 
     } else{
+      
       throw new Error('email is invalid');
     }
 
@@ -125,30 +138,18 @@ async getApplicantIfExists(authorizationString, authorizationType) {
  * @param {JSON} upDatedValues updated applicant data 
  * @returns 
  */
-async updateApplicant(applicantDTO, upDatedValues){
-  let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+async updateApplicant(applicant, upDatedValues){
+  //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
 
-  if(applicant) {
-    if(validator.isEmail(applicant.email)) {
+  applicant.firstName = upDatedValues.firstName;
+  applicant.lastName = upDatedValues.lastName;
+  applicant.dob = upDatedValues.dob;
+  applicant.username = upDatedValues.username;
+  applicant.email = upDatedValues.email;
+  
+  await applicant.save();
+  return applicant;
 
-      applicant.firstName = upDatedValues.firstName;
-      applicant.lastName = upDatedValues.lastName;
-      applicant.dob = upDatedValues.dob;
-      if(upDatedValues.email === 'tempString')
-        applicant.username = upDatedValues.username;
-      else
-      applicant.email = upDatedValues.email;
-      
-      await applicant.save();
-      return applicant;
-    }
-    else {
-      throw new Error('email is invalid');
-    }
-  } 
-  else {
-    throw new Error('The specified username does not exist.')
-  }
 }
 
 }
