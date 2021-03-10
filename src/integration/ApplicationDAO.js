@@ -76,8 +76,8 @@ class ApplicationDAO {
                                                 email: personDTO.email,
                                                 ssn: personDTO.ssn,
                                                 username: personDTO.username,
-                                                password: personDTO.password}, { transaction: t});
-      await createdPerson.setRole(await Role.findByPk(roleId), { transaction: t});
+                                                password: personDTO.password}});
+      await createdPerson.setRole(await Role.findByPk(roleId));
 
      
       
