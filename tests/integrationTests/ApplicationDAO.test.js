@@ -17,7 +17,7 @@ const newPerson = new PersonDTO(
     "username": "asdfgsdd",
     "password": "password"
   }
-); //userDTO
+);
 
 const applicant = '2';
 const recruiter = '1';
@@ -26,7 +26,6 @@ beforeAll(async () => {
   connection = await connectToDB();
   applicationDAO = new ApplicationDAO();
   applicationDAO.setDatabase(connection);
-  //await applicationDAO.destroyPerson(newPerson);
 });
 
 beforeEach(async () => {
@@ -34,17 +33,16 @@ beforeEach(async () => {
   applicationDAO.setDatabase(connection);
   await waitBecauseJestDoesNot();
   await applicationDAO.createTables();
-  await applicationDAO.createPerson(newPerson, applicant); //applicationDAO
+  await applicationDAO.createPerson(newPerson, applicant);
 });
 
 afterEach(async () => {
   await applicationDAO.destroyPerson(newPerson);
-  //await clearDB();
 });
 
 afterAll(async () => {
-  //await applicationDAO.destroyPerson(newPerson);
-  //await connection.destroy();
+  await applicationDAO.destroyPerson(newPerson);
+  await connection.close();
 });
 
 describe('tests for getPerson', () => {
@@ -52,6 +50,14 @@ describe('tests for getPerson', () => {
     const foundUser = await applicationDAO.getPerson(newPerson.username);
     expect(foundUser.username).toBe(newPerson.username);
     expect(foundUser.email).toBe(newPerson.email);
+  });
+  test('non-existing person', async() => {
+    let personNotFoundErrorThrown = false;
+    try{const foundUser = await applicationDAO.getPerson("NotImportant");}
+    catch(error){
+      personNotFoundErrorThrown = true;
+    }
+    expect(personNotFoundErrorThrown).toBe(true);
   });
 });
 
@@ -81,12 +87,5 @@ const connectToDB = async () => {
 
 
 /*
-const clearDB = async () => {
-  let sql = 'drop table if exists people';
-  await connection.query(sql, (err, result) => {
-    if(err){
-      throw err;
-    }
-  });
-};
+const clearDB = async () => {};
 */
