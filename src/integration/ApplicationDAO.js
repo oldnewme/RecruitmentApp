@@ -9,6 +9,14 @@ const Availability = require('../model/Availability');
 const Competence = require('../model/Competence');
 const CompetenceProfile = require('../model/CompetenceProfile');
 
+//try to move these elsewhere once tests work
+const path = require('path');
+const APP_ROOT_DIR = path.join(__dirname, '../..');
+require('dotenv-safe').config({allowEmptyValues: true,
+  path: path.join(APP_ROOT_DIR, '.env'),
+  example: path.join(APP_ROOT_DIR, '.env.example')
+});
+
 /**
  * Class that handles interactions with database
  */
@@ -36,6 +44,18 @@ class ApplicationDAO {
         Competence.createModel(this.database);
         CompetenceProfile.createModel(this.database);
     }
+
+    setDatabase(connection){
+      this.database = connection;
+      Applicant.createModel(connection);
+      Recruiter.createModel(connection);
+      Role.createModel(connection);
+      Person.createModel(connection);
+      Availability.createModel(connection);
+      Competence.createModel(connection);
+      CompetenceProfile.createModel(connection);
+    }
+
     async createTables() {
       await this.database.authenticate();
       await this.database.sync({force: false});
@@ -70,7 +90,7 @@ class ApplicationDAO {
    
     
     if(validator.isEmail(personDTO.email)){
-      
+
       const createdPerson = await Person.create({name: personDTO.name,
                                                 surname: personDTO.surname,
                                                 email: personDTO.email,
@@ -89,7 +109,15 @@ class ApplicationDAO {
     }
 
   }
-  
+
+  async destroyPerson(personDTO){
+    await Person.destroy({
+      where: {
+        username: personDTO.username
+      }
+    });
+  }
+
 /**
 * return an applicant from the DB that matches with the specified username.
 * @param {Username} username the username of the Applicant that is wanted

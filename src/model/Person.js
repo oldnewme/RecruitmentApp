@@ -50,7 +50,8 @@ class Person extends Sequelize.Model {
           },
 
         },
-        {sequelize, modelName: Person.PERSON_MODEL_NAME, paranoid: true}
+        {sequelize, modelName: Person.PERSON_MODEL_NAME, paranoid: false}
+        //cannot be paranoid for testing
     );
     Person.belongsTo(Role);
     return Person;

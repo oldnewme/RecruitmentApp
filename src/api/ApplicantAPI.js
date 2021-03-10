@@ -66,10 +66,10 @@ class ApplicantAPI {
       })
 
       /**
-       * Route logs in a user given som credentials and returns 
+       * Route logs in a user given som credentials and returns
        * username, accesstoken and refreshtoken
        * return 401: The user was not authenticated.
-       *        
+       *
        */
       this.router.post(loginRoute, async (req, res) => {
 
