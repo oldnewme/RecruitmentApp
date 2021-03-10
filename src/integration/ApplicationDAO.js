@@ -21,9 +21,13 @@ require('dotenv-safe').config({allowEmptyValues: true,
  * Class that handles interactions with database
  */
 class ApplicationDAO {
+
+  
   /**
    * Constructor that sets up connection to database and creates
    * the tables corresponding to users of the system
+   * 
+   * 
    */
     constructor(){
         this.database = new Sequelize(
@@ -57,11 +61,14 @@ class ApplicationDAO {
       await this.database.sync({force: false});
   }
 
+  
+
   /**
    * Creates a user in the database
    * @param {ApplicantDTO} applicantDTO the object containing information about an Applicant
    */
   async createUser(applicantDTO){
+
     if(validator.isEmail(applicantDTO.email)){
     return await Applicant.create({firstName: applicantDTO.firstName,
       lastName: applicantDTO.lastName,
@@ -75,7 +82,13 @@ class ApplicationDAO {
 
   }
 
+  async upDateUser() {
+    
+  }
+
   async createPerson(personDTO, roleId){
+   
+    
     if(validator.isEmail(personDTO.email)){
 
       const createdPerson = await Person.create({name: personDTO.name,
@@ -85,9 +98,13 @@ class ApplicationDAO {
                                                 username: personDTO.username,
                                                 password: personDTO.password});
       await createdPerson.setRole(await Role.findByPk(roleId));
+
+     
+      
       return createdPerson;
 
     } else{
+      
       throw new Error('email is invalid');
     }
 
@@ -107,13 +124,14 @@ class ApplicationDAO {
 * @return the applicant object with details from the database
 * @throw an error if the user does not exist
 */
-  async getApplicant(username){
-    let foundApplicant = await Applicant.findOne({where: {username: username}});
+  async getApplicant(authorizationString, authorizationType){
+    let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+    let foundApplicant = await Applicant.findOne(whereClause);
     if(foundApplicant){
       return foundApplicant;
     }
     else {
-      throw new Error('The specified username does not exist.');
+      throw new Error('The specified ' + authorizationType + ' does not exist.');
     }
   }
 
@@ -131,6 +149,35 @@ async getPerson(username){
   else {
     throw new Error('The specified username does not exist.');
   }
+}
+
+async getApplicantIfExists(authorizationString, authorizationType) {
+  let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+  let foundApplicant = await Applicant.findOne(whereClause);
+  if(foundApplicant){
+    return foundApplicant;
+  }
+  return undefined;
+}
+
+/**
+ * Uppdates the applicant data 
+ * @param {ApplicantDTO} applicantDTO contains applicant data 
+ * @param {JSON} upDatedValues updated applicant data 
+ * @returns 
+ */
+async updateApplicant(applicant, upDatedValues){
+  //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+
+  applicant.firstName = upDatedValues.firstName;
+  applicant.lastName = upDatedValues.lastName;
+  applicant.dob = upDatedValues.dob;
+  applicant.username = upDatedValues.username;
+  applicant.email = upDatedValues.email;
+  
+  await applicant.save();
+  return applicant;
+
 }
 
 }
