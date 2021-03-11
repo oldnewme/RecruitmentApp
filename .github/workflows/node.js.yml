@@ -25,10 +25,6 @@ jobs:
       DB_DIALECT: postgres
       ACCESS_TOKEN_SECRET: a835d6c5df6d6032cd2adf263016846520713cdf8341733da6d690b7686a02cb2c10441cf052ae29eeaf26047700171aecb51643051fb75c9ae397cc839c2399
       REFRESH_TOKEN_SECRET: 133013a084b2de6236816c64d01de2457e2d2c47e52d1bf0aec72e8dcdf27f13d32a1aa9a4f138fcac087272930f67d77c8ed09a52208d993aa284696e5278bf  
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/  
     services:
       postgres:
         image: postgres
@@ -43,10 +39,7 @@ jobs:
           
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+    
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
