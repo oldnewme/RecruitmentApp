@@ -37,7 +37,8 @@ class Validators {
             assert(validator.isInt(day, {gt: 0, lt: 32}))
             assert(ssn.length == 8);
         } catch (error) {
-            throw new Error('date of birth must be ten numbers and a valid date between 19000101 and 20051231')
+            console.log(error)
+            throw new Error('date of birth must be 8 numbers and a valid date between 19000101 and 20051231')
         }
     }
 
