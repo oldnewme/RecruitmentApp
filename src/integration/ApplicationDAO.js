@@ -3,7 +3,7 @@ const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
 const Person = require('../model/Person');
 const Role = require('../model/Role');
-const validator = require('validator');
+const Validators = require('../util/Validators');
 const bcrypt = require('bcrypt');
 const Availability = require('../model/Availability');
 const Competence = require('../model/Competence');
@@ -82,7 +82,11 @@ class ApplicationDAO {
     const t = await this.database.transaction();
 
     try {
-      if(validator.isEmail(personDTO.email)) {
+      Validators.isValidPassword(personDTO.password);
+      Validators.isEmail(personDTO.email);
+      Validators.isValidSSN(personDTO.ssn);
+      Validators.isAlphaNumeric(personDTO.username);
+      Validators.validName(personDTO.name, personDTO.surname)
         const createdPerson = await Person.create({
           name: personDTO.name,
           surname: personDTO.surname,
@@ -96,10 +100,6 @@ class ApplicationDAO {
         await t.commit();
         return createdPerson;
 
-      } 
-      else {
-        throw new Error('email is invalid');
-      }
     } catch(error) {
       await t.rollback();
       throw error;
