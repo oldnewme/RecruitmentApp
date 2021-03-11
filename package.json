@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest --runInBand --watchAll --detectOpenHandles --silent"
+    "test": "jest --runInBand --watchAll --detectOpenHandles --silent",
+    "test ci":"jest --runInBand --watchAll --detectOpenHandles --silent"
   },
   "repository": {
     "type": "git",
