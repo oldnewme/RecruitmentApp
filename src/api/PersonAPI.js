@@ -3,6 +3,7 @@ const controller = require('../controller/Controller');
 const PersonDTO = require('../dto/PersonDTO');
 const Authorization = require('./auth/Authorization');
 const ErrorHandler = require('./error/errorHandler');
+const Validators = require('../util/Validators');
 
 
 /**
@@ -47,6 +48,13 @@ class PersonAPI {
         try {
         const personDTO = new PersonDTO(req.body);
         const role = req.body.roleId;
+
+        Validators.isValidPassword(personDTO.password);
+        Validators.isEmail(personDTO.email);
+        Validators.isValidSSN(personDTO.ssn);
+        Validators.isAlphaNumeric(personDTO.username);
+        Validators.validName(personDTO.name, personDTO.surname)
+
         await controller.signupPerson(personDTO, role);
         return res.status(200).json(personDTO)
         } catch (error) {

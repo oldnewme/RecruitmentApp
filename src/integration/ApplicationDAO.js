@@ -3,7 +3,7 @@ const Applicant = require('../model/Applicant');
 const Recruiter = require('../model/Recruiter');
 const Person = require('../model/Person');
 const Role = require('../model/Role');
-const validator = require('validator');
+const Validators = require('../util/Validators');
 const bcrypt = require('bcrypt');
 const Availability = require('../model/Availability');
 const Competence = require('../model/Competence');
@@ -69,7 +69,8 @@ class ApplicationDAO {
    */
   async createUser(applicantDTO){
 
-    if(validator.isEmail(applicantDTO.email)){
+    if(validator.isEmail(applicantDTO.email) 
+    && validator.isAlphaLocales(applicantDTO.username)){
     return await Applicant.create({firstName: applicantDTO.firstName,
       lastName: applicantDTO.lastName,
       email: applicantDTO.email,
@@ -88,9 +89,14 @@ class ApplicationDAO {
 
   async createPerson(personDTO, roleId){
    
-    
-    if(validator.isEmail(personDTO.email)){
-
+    try {
+      Validators.isValidPassword(personDTO.password);
+      Validators.isEmail(personDTO.email);
+      Validators.isValidSSN(personDTO.ssn);
+      Validators.isAlphaNumeric(personDTO.username);
+      Validators.validName(personDTO.name, personDTO.surname)
+  
+      
       const createdPerson = await Person.create({name: personDTO.name,
                                                 surname: personDTO.surname,
                                                 email: personDTO.email,
@@ -98,15 +104,15 @@ class ApplicationDAO {
                                                 username: personDTO.username,
                                                 password: personDTO.password});
       await createdPerson.setRole(await Role.findByPk(roleId));
-
-     
-      
+  
+       
+        
       return createdPerson;
-
-    } else{
-      
-      throw new Error('email is invalid');
+  
+    } catch (error) {
+      throw error;
     }
+
 
   }
 
