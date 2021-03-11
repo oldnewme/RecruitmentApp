@@ -1,0 +1,45 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ albromsErrorHandling ]
+  pull_request:
+    branches: [ albromsErrorHandling ]
+
+jobs:
+  npm-inst:
+    name: run-npm-test
+    runs-on: ubuntu-latest
+    container: node:14.15.1-buster
+    
+    env:
+      HOST: 127.0.0.1
+      PORT: 5000
+      DB_NAME: albroms
+      DB_USER: albroms
+      DB_PASS: albroms
+      DB_HOST: postgres
+      DB_DIALECT: postgres
+      ACCESS_TOKEN_SECRET: a835d6c5df6d6032cd2adf263016846520713cdf8341733da6d690b7686a02cb2c10441cf052ae29eeaf26047700171aecb51643051fb75c9ae397cc839c2399
+      REFRESH_TOKEN_SECRET: 133013a084b2de6236816c64d01de2457e2d2c47e52d1bf0aec72e8dcdf27f13d32a1aa9a4f138fcac087272930f67d77c8ed09a52208d993aa284696e5278bf  
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: albroms
+          POSTGRES_PASSWORD: albroms
+          POSTGRES_DB: albroms
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v2
+    
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
