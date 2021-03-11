@@ -9,9 +9,9 @@ let applicationDAO = null;
 
 const newPerson = new PersonDTO({
   "name": "Among",
-  "surame": "Us",
+  "surname": "Us",
   "email": "sus@meme.com",
-  "ssn": "1970-01-01",
+  "ssn": "19700101",
   "roleId": 2,
   "username": "amongus",
   "password": "password"
@@ -20,7 +20,7 @@ const badEmail = new PersonDTO({
   "name": "A",
   "surname": "B",
   "email": "invalid",
-  "ssn": "1970-01-01",
+  "ssn": "19700101",
   "roleId": 2,
   "username": "badMailPerson",
   "password": "password"
@@ -32,7 +32,7 @@ const sameEmail = new PersonDTO({
   "name": "C",
   "surname": "D",
   "email": "sus@meme.com",
-  "ssn": "1970-01-01",
+  "ssn": "19700101",
   "roleId": 2,
   "username": "sameEmailPerson",
   "password": "password"
@@ -42,7 +42,7 @@ const validPerson = new PersonDTO({
   "name": "Peter",
   "surname": "Griffin",
   "email": "peter@perhaps.com",
-  "ssn": "1965-08-23",
+  "ssn": "19650823",
   "roleId": 2,
   "username": "peter",
   "password": "password"
@@ -76,13 +76,13 @@ afterAll(async () => {
 
 describe('tests for getPerson', () => {
   test('existing person', async() => {
-    const foundUser = await applicationDAO.getPerson(newPerson.username);
+    const foundUser = await applicationDAO.getPerson(newPerson.username, "username");
     expect(foundUser.username).toBe(newPerson.username);
     expect(foundUser.email).toBe(newPerson.email);
   });
   test('non-existing person', async() => {
     let personNotFound = false;
-    try{const foundUser = await applicationDAO.getPerson("NotImportant");}
+    try{const foundUser = await applicationDAO.getPerson("NotImportant", "username");}
     catch(error){
       personNotFound = true;
     }
