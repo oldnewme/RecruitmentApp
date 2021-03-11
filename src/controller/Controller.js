@@ -15,6 +15,7 @@ const applicants = require('../integration/ApplicantDB');
          this.applicationDAO = new ApplicationDAO();
      }
 
+
      /**
       * Instantiates a controller object
       */
@@ -53,9 +54,9 @@ const applicants = require('../integration/ApplicantDB');
        * @param {Username} username The username of the of
        * the person to be retrieved from the database
        */
-      async getPerson(username){
+      async getPerson(authorizationString, authorizationType){
         try{
-          return await this.applicationDAO.getPerson(username)
+          return await this.applicationDAO.getPerson(authorizationString, authorizationType)
         }
         catch(error){
           throw error;
@@ -67,14 +68,52 @@ const applicants = require('../integration/ApplicantDB');
        * @param {Username} username The username of the of
        * the person to be retrieved from the database
        */
-      async getApplicant(username){
+      async getApplicant(authorizationString, authorizationType){
         try{
-          return await this.applicationDAO.getApplicant(username)
+          return await this.applicationDAO.getApplicant(authorizationString, authorizationType)
         }
         catch(error){
           throw error;
         }
     }
+
+      /**
+       * Calls update data function
+       * @param {ApplicantDTO} applicantDTO contains applicant data  
+       * @param {JSON} upDatedValues contains the updated values 
+       * @returns 
+       */
+      async upDateApplicant(applicantDTO, upDatedValues) {
+        try{
+          return await this.applicationDAO.updateApplicant(applicantDTO, upDatedValues)
+        }
+        catch(error) {
+          throw error;
+        }
+      }
+
+      /**
+       * Calls update data function
+       * @param {ApplicantDTO} applicantDTO contains applicant data  
+       * @param {JSON} upDatedValues contains the updated values 
+       * @returns 
+       */
+        async upDatePerson(personDTO, upDatedValues) {
+        try{
+          return await this.applicationDAO.updatePerson(personDTO, upDatedValues)
+        }
+        catch(error) {
+          throw error;
+        }
+      }
+
+      async ifApplicantExists(authorizationString, authorizationType) {
+        return await this.applicationDAO.getApplicantIfExists(authorizationString, authorizationType)
+      }
+
+      async ifPersonExists(authorizationString, authorizationType) {
+        return await this.applicationDAO.getPersonIfExists(authorizationString, authorizationType)
+      }
  }
 
  const controller = new Controller();
