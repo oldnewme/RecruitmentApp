@@ -159,22 +159,32 @@ class PersonAPI {
      * update null values in the database
      */
     this.router.post(updateRoute, async (req, res) => {
-      console.log(req.headers['authorization'])
       const userAccessToken = req.headers['authorization'].split(" ")[1];
       const userLogInInfo = Authorization.getUserInfo(userAccessToken);
-      console.log(userLogInInfo)  
 
       try{
         var person;
         var upDatedPerson;
+        var tempPerson;
+        var tempPersonSSN
 
         //If client logged in with username
         if(userLogInInfo.email === undefined) {
-          const tempPerson = await controller.ifPersonExists(req.body.email, "email")
-          if(tempPerson !== undefined) {
-            
+
+          
+          tempPerson = await controller.ifPersonExists(req.body.email, "email")
+          tempPersonSSN = await controller.ifPersonExists(req.body.ssn, "ssn");
+
+          //tempPerson !== undefined => exists person with that email
+          //tempPerson !== userLogInInfo.username => Person object from entered email has differnt username from the one used for login. i.e not same person object
+          if(tempPerson !== undefined && tempPerson.username != userLogInInfo.username) 
             throw new Error("Entered email is already taken")
-          }
+
+          //tempPersonSSN !== undefined => exists person with same ssn
+          //tempPerson !== userLogInInfo.username => Person object from entered ssn has differnt username from the one used for login. i.e not same person object
+          else if(tempPersonSSN !== undefined && tempPersonSSN.username !== userLogInInfo.username) 
+            throw new Error("Entered ssn is already taken")
+
           else {
             person = await controller.ifPersonExists(userLogInInfo.username, 'username');
             upDatedPerson = await controller.upDatePerson(person, req.body)
@@ -184,9 +194,20 @@ class PersonAPI {
 
         //If client loggen in with email
         else if(userLogInInfo.username === undefined) {
-          const tempPerson = await controller.ifPersonExists(req.body.username, "username")
-          if(tempPerson !== undefined)
+
+          tempPerson = await controller.ifPersonExists(req.body.username, "username")
+          tempPersonSSN = await controller.ifPersonExists(req.body.ssn, "ssn");
+
+          //tempPerson !== undefined => exists person with that username
+          //tempPerson !== userLogInInfo.email => Person object from entered username has differnt email from the one used for login. i.e not same person object
+          if(tempPerson !== undefined && tempPerson.email != userLogInInfo.email)
             throw new Error("Entered username is already taken")
+
+          //tempPersonSSN !== undefined => exists person with same ssn
+          //tempPerson !== userLogInInfo.email => Person object from entered ssn has differnt email from the one used for login. i.e not same person object
+          else if(tempPersonSSN !== undefined && tempPersonSSN.email != userLogInInfo.email) 
+            throw new Error("Entered ssn is already taken")
+
           else {
             person = await controller.ifPersonExists(userLogInInfo.email, 'email');
             upDatedPerson = await controller.upDatePerson(person, req.body);
@@ -202,6 +223,26 @@ class PersonAPI {
         return res.status(401).json(this.errorHandler.handleError(updateRoute, error));
       }
     });
+
+    // const validate = (firstArg, secondArg) => {
+    //   var person;
+    //   var upDatedPerson;
+    //   var tempPerson;
+    //   var tempPersonSSN
+
+    //   tempPerson = await controller.ifPersonExists(req.body.email, "email")
+    //   tempPersonSSN = await controller.ifPersonExists(req.body.ssn, "ssn");
+    //   if(tempPerson !== undefined && tempPerson.username != userLogInInfo.username) 
+    //     throw new Error("Entered email is already taken")
+    //   else if(tempPerson !== undefined && tempPerson.username != userLogInInfo.username) 
+    //     throw new Error("Entered ssn is already taken")
+    //   else {
+    //     person = await controller.ifPersonExists(userLogInInfo.username, 'username');
+    //     upDatedPerson = await controller.upDatePerson(person, req.body)
+    //     res.status(200).json(upDatedPerson)
+    //   }
+
+    // }
 
   }
 };
