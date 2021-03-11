@@ -219,21 +219,24 @@ class ApplicationDAO {
 
 //   }
 
-// FIXME: documentation
-  async updatePerson(person, upDatedValues){
-    //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+  /**
+  * @param {PersonDTO} personDTO the personDTO to update.
+  * @param {JSON} upDatedValues a personDTO object or a JSON object with same attributes as a personDTO containing new values.
+  */
+  async updatePerson(personDTO, upDatedValues){
+    let personToUpdate = await Person.findOne({where: {username: personDTO.username}});
     const t = await this.database.transaction();
 
     try {
-      person.name = upDatedValues.name;
-      person.surname = upDatedValues.surname;
-      person.ssn = upDatedValues.ssn;
-      person.username = upDatedValues.username;
-      person.email = upDatedValues.email;
+      personToUpdate.name = upDatedValues.name;
+      personToUpdate.surname = upDatedValues.surname;
+      personToUpdate.ssn = upDatedValues.ssn;
+      personToUpdate.username = upDatedValues.username;
+      personToUpdate.email = upDatedValues.email;
 
-      await person.save({ transaction: t });
+      await personToUpdate.save({ transaction: t });
       t.commit();
-      return person;
+      return personToUpdate;
     } catch(error) {
       t.rollback();
       throw error;

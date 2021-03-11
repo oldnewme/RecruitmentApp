@@ -187,8 +187,14 @@ describe('tests for getPersonIfExists', () => {
   */
 });
 
-//describe('tests for updatePerson');
-
+describe('tests for updatePerson', () => {
+  test('check that values are updated', async() => {
+    let updatedPerson = await applicationDAO.updatePerson(newPerson, validPerson);
+    applicationDAO.destroyPerson(updatedPerson);
+    expect(updatedPerson.username).toBe(validPerson.username);
+    expect(updatedPerson.email).toBe(validPerson.email);
+  });
+});
 const waitBecauseJestDoesNot = async() => {
   await sleep(100);
 };
