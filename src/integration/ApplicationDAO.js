@@ -43,6 +43,11 @@ class ApplicationDAO {
     CompetenceProfile.createModel(this.database);
   }
 
+  /**
+  * Alters the ApplicationDAO's connection so that a different database is used.
+  * This method is mainly for use in tests to prevent the main database from being affected.
+  * @param {Sequelize} connection is a new Sequelize instance that provides new specifications.
+  */
   setDatabase(connection) {
     this.database = connection;
     Applicant.createModel(connection);
@@ -105,7 +110,12 @@ class ApplicationDAO {
       throw error;
     }
   }
-
+/**
+* Removes the specified person from the Person table in the database.
+* If the specified person does not exist, then nothing happens since the
+* username will not have matched with any usernames in the table.
+* @param {PersonDTO} personDTO is the person we want to remove
+*/
   async destroyPerson(personDTO) {
     await Person.destroy({
       where: {
@@ -133,13 +143,14 @@ class ApplicationDAO {
 
   /**
   * return an person from the DB that matches with the specified username.
-  * @param {Username} username the username of the Person that is wanted
+  * @param {String} authorizationString the username or email of the Person that is wanted.
+  * @param {String} authorizationType a string representation of the username or email of the Person that is wanted.
   * @return the person object with details from the database
   * @throw an error if the user does not exist
   */
   async getPerson(authorizationString, authorizationType) {
     const t = await this.database.transaction();
-    
+
     try {
       let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
       let foundPerson = await Person.findOne(whereClause, { transaction: t });
@@ -165,11 +176,12 @@ class ApplicationDAO {
 //   return undefined;
 // }
 
+  // FIXME: Timeout when attempting to get person that does not exist.
   async getPersonIfExists(authorizationString, authorizationType) {
     const t = await this.database.transaction();
 
     try {
-      let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+      let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}');
       let foundPerson = await Person.findOne(whereClause, { transaction: t });
       if(foundPerson){
         await t.commit();
@@ -182,10 +194,10 @@ class ApplicationDAO {
   }
 
 // /**
-//  * Uppdates the applicant data 
-//  * @param {ApplicantDTO} applicantDTO contains applicant data 
-//  * @param {JSON} upDatedValues updated applicant data 
-//  * @returns 
+//  * Uppdates the applicant data
+//  * @param {ApplicantDTO} applicantDTO contains applicant data
+//  * @param {JSON} upDatedValues updated applicant data
+//  * @returns
 //  */
 //   async updateApplicant(applicant, upDatedValues){
 //     //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
@@ -197,7 +209,7 @@ class ApplicationDAO {
 //       applicant.dob = upDatedValues.dob;
 //       applicant.username = upDatedValues.username;
 //       applicant.email = upDatedValues.email;
-      
+
 //       await applicant.save({ transaction: t });
 //       t.commit();
 //       return applicant;
@@ -207,6 +219,7 @@ class ApplicationDAO {
 
 //   }
 
+// FIXME: documentation
   async updatePerson(person, upDatedValues){
     //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
     const t = await this.database.transaction();
@@ -217,7 +230,7 @@ class ApplicationDAO {
       person.ssn = upDatedValues.ssn;
       person.username = upDatedValues.username;
       person.email = upDatedValues.email;
-      
+
       await person.save({ transaction: t });
       t.commit();
       return person;

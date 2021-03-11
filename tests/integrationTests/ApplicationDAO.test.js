@@ -76,22 +76,32 @@ afterAll(async () => {
 
 describe('tests for getPerson', () => {
   test('existing person', async() => {
-    const foundUser = await applicationDAO.getPerson(newPerson.username, "username");
+    let foundUser = await applicationDAO.getPerson(newPerson.username, "username");
     expect(foundUser.username).toBe(newPerson.username);
+    foundUser = await applicationDAO.getPerson(newPerson.email, "email");
     expect(foundUser.email).toBe(newPerson.email);
   });
   test('non-existing person', async() => {
     let personNotFound = false;
-    try{const foundUser = await applicationDAO.getPerson("NotImportant", "username");}
+    try{
+      const foundUser = await applicationDAO.getPerson("NotImportant", "username");
+      const foundEmail = await applicationDAO.getPerson("fake@mail.com", "email");
+    }
     catch(error){
       personNotFound = true;
     }
     expect(personNotFound).toBe(true);
   });
+  test('invalid authorizationType', async() => {
+    let invalidAuthType = false;
+    try{await applicationDAO.getPerson(newPerson.username, "fakeType");}
+    catch(error){invalidAuthType = true;}
+    expect(invalidAuthType).toBe(true);
+  });
 });
 
 describe('tests for createPerson', () => {
-  test('invalid email format', async () => {
+  test('invalid email format', async() => {
     let caughtError = false;
     try{
       caughtError = await applicationDAO.createPerson(badEmail, badEmail.roleId);
@@ -102,7 +112,7 @@ describe('tests for createPerson', () => {
     }
     expect(caughtError).toBe(true);
   });
-  test('duplicate email', async () => {
+  test('duplicate email', async() => {
     let duplicateEmail = false;
     try{
       duplicateEmail = await applicationDAO.createPerson(sameEmail, sameEmail.roleId);
@@ -113,7 +123,7 @@ describe('tests for createPerson', () => {
     }
     expect(duplicateEmail).toBe(true);
   });
-  test('duplicate username', async () => {
+  test('duplicate username', async() => {
     let duplicateUsername = false;
     try{
       duplicateUsername = await applicationDAO.createPerson(sameUser, sameUser.roleId);
@@ -124,7 +134,7 @@ describe('tests for createPerson', () => {
     }
     expect(duplicateUsername).toBe(true);
   });
-  test('add another person', async () => {
+  test('add another person', async() => {
     let successfullyAdded = false;
     try{
       await applicationDAO.createPerson(validPerson, validPerson.roleId);
@@ -138,7 +148,48 @@ describe('tests for createPerson', () => {
   });
 });
 
-const waitBecauseJestDoesNot = async () => {
+describe('tests for destroyPerson', () => {
+  test('check that person was removed', async() => {
+    let successfullyRemoved = false;
+    await applicationDAO.destroyPerson(newPerson);
+    try{
+      await applicationDAO.getPerson(newPerson);
+    }
+    catch(error){
+      successfullyRemoved = true;
+    }
+    expect(successfullyRemoved).toBe(true);
+  });
+  test('remove non-existing person', async() => {
+    let destroyFailed = false;
+    try{
+      await applicationDAO.destroyPerson(validPerson);
+    }
+    catch(error){
+      destroyFailed = true;
+    }
+    expect(destroyFailed).toBe(false);
+  });
+});
+
+describe('tests for getPersonIfExists', () => {
+
+  test('test for person that exists via username', async() => {
+    let foundPerson = await applicationDAO.getPersonIfExists(newPerson.username, "username");
+    expect(foundPerson).toBeDefined();
+  });
+
+  /*
+  test('test for person that does not exist', async () => {
+    let foundPerson = await applicationDAO.getPersonIfExists("NotAPerson", "username");
+    expect(foundPerson).toBeUndefined();
+  });
+  */
+});
+
+//describe('tests for updatePerson');
+
+const waitBecauseJestDoesNot = async() => {
   await sleep(100);
 };
 
