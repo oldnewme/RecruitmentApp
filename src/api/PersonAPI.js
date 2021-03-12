@@ -60,7 +60,8 @@ class PersonAPI {
         Validators.isEmail(personDTO.email);
         Validators.isValidSSN(personDTO.ssn);
         Validators.isAlphaNumeric(personDTO.username);
-        Validators.validName(personDTO.name, personDTO.surname)
+        Validators.validName(personDTO.name)
+        Validators.validSurname(personDTO.surname)
 
         await controller.signupPerson(personDTO, role);
         return res.status(200).json(personDTO)
