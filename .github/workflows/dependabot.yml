@@ -1,5 +1,8 @@
 # Set update schedule for GitHub Actions
-
+name: Codacy Analysis CLI
+on:
+  push:
+    branches: [ main ]
 version: 2
 updates:
 
