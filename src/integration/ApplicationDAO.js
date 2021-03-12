@@ -1,10 +1,7 @@
 const Sequelize = require('sequelize');
-const Applicant = require('../model/Applicant');
-const Recruiter = require('../model/Recruiter');
 const Person = require('../model/Person');
 const Role = require('../model/Role');
 const Validators = require('../util/Validators');
-const bcrypt = require('bcrypt');
 const Availability = require('../model/Availability');
 const Competence = require('../model/Competence');
 const CompetenceProfile = require('../model/CompetenceProfile');
@@ -34,8 +31,6 @@ class ApplicationDAO {
       {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT}
     );
 
-    Applicant.createModel(this.database);
-    Recruiter.createModel(this.database);
     Role.createModel(this.database);
     Person.createModel(this.database);
     Availability.createModel(this.database);
@@ -43,10 +38,13 @@ class ApplicationDAO {
     CompetenceProfile.createModel(this.database);
   }
 
+  /**
+  * Alters the ApplicationDAO's connection so that a different database is used.
+  * This method is mainly for use in tests to prevent the main database from being affected.
+  * @param {Sequelize} connection is a new Sequelize instance that provides new specifications.
+  */
   setDatabase(connection) {
     this.database = connection;
-    Applicant.createModel(connection);
-    Recruiter.createModel(connection);
     Role.createModel(connection);
     Person.createModel(connection);
     Availability.createModel(connection);
@@ -59,25 +57,12 @@ class ApplicationDAO {
     await this.database.sync({force: false});
   }
 
-  // /**
-  //  * Creates a user in the database
-  //  * @param {ApplicantDTO} applicantDTO the object containing information about an Applicant
-  //  */
-  // async createUser(applicantDTO){
-
-  //   if(validator.isEmail(applicantDTO.email)){
-  //   return await Applicant.create({firstName: applicantDTO.firstName,
-  //     lastName: applicantDTO.lastName,
-  //     email: applicantDTO.email,
-  //     dob: applicantDTO.dob,
-  //     username: applicantDTO.username,
-  //     password: /*bcrypt.hashSync(applicantDTO.password, 10)*/applicantDTO.password});
-  //   } else{
-  //     throw new Error('email is invalid');
-  //   }
-
-  // }
-
+  /**
+   * Creates a user in the database
+   * @param {PersonDTO} personDTO the object containing information about an Applicant
+   * @param {Integer} roleId 
+   * @returns 
+   */
   async createPerson(personDTO, roleId) {
     const t = await this.database.transaction();
 
@@ -108,6 +93,12 @@ class ApplicationDAO {
     }
   }
 
+/**
+* Removes the specified person from the Person table in the database.
+* If the specified person does not exist, then nothing happens since the
+* username will not have matched with any usernames in the table.
+* @param {PersonDTO} personDTO is the person we want to remove
+*/
   async destroyPerson(personDTO) {
     await Person.destroy({
       where: {
@@ -116,32 +107,16 @@ class ApplicationDAO {
     });
   }
 
-// /**
-// * return an applicant from the DB that matches with the specified username.
-// * @param {Username} username the username of the Applicant that is wanted
-// * @return the applicant object with details from the database
-// * @throw an error if the user does not exist
-// */
-//   async getApplicant(authorizationString, authorizationType){
-//     let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
-//     let foundApplicant = await Applicant.findOne(whereClause);
-//     if(foundApplicant){
-//       return foundApplicant;
-//     }
-//     else {
-//       throw new Error('The specified ' + authorizationType + ' does not exist.');
-//     }
-//   }
-
   /**
   * return an person from the DB that matches with the specified username.
-  * @param {Username} username the username of the Person that is wanted
+  * @param {String} authorizationString the username or email of the Person that is wanted.
+  * @param {String} authorizationType a string representation of the username or email of the Person that is wanted.
   * @return the person object with details from the database
   * @throw an error if the user does not exist
   */
   async getPerson(authorizationString, authorizationType) {
     const t = await this.database.transaction();
-    
+
     try {
       let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
       let foundPerson = await Person.findOne(whereClause, { transaction: t });
@@ -158,20 +133,17 @@ class ApplicationDAO {
     }
   }
 
-// async getApplicantIfExists(authorizationString, authorizationType) {
-//   let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
-//   let foundApplicant = await Applicant.findOne(whereClause);
-//   if(foundApplicant){
-//     return foundApplicant;
-//   }
-//   return undefined;
-// }
-
+  /**
+   * 
+   * @param {*} authorizationString 
+   * @param {*} authorizationType 
+   * @returns 
+   */
   async getPersonIfExists(authorizationString, authorizationType) {
     const t = await this.database.transaction();
 
     try {
-      let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}')
+      let whereClause = JSON.parse('{ "where": {' + '"' + authorizationType + '"' + ':' + '"' + authorizationString + '"' +'}}');
       let foundPerson = await Person.findOne(whereClause, { transaction: t });
       if(foundPerson){
         await t.commit();
@@ -183,46 +155,24 @@ class ApplicationDAO {
     }
   }
 
-// /**
-//  * Uppdates the applicant data 
-//  * @param {ApplicantDTO} applicantDTO contains applicant data 
-//  * @param {JSON} upDatedValues updated applicant data 
-//  * @returns 
-//  */
-//   async updateApplicant(applicant, upDatedValues){
-//     //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
-//     const t = await this.database.transaction();
-
-//     try {
-//       applicant.firstName = upDatedValues.firstName;
-//       applicant.lastName = upDatedValues.lastName;
-//       applicant.dob = upDatedValues.dob;
-//       applicant.username = upDatedValues.username;
-//       applicant.email = upDatedValues.email;
-      
-//       await applicant.save({ transaction: t });
-//       t.commit();
-//       return applicant;
-//     } catch(error) {
-//       t.rollback();
-//     }
-
-//   }
-
-  async updatePerson(person, upDatedValues){
-    //let applicant = await Applicant.findOne({where: {username: applicantDTO.username}})
+  /**
+  * @param {PersonDTO} personDTO the personDTO to update.
+  * @param {JSON} upDatedValues a personDTO object or a JSON object with same attributes as a personDTO containing new values.
+  */
+  async updatePerson(personDTO, upDatedValues){
+    let personToUpdate = await Person.findOne({where: {username: personDTO.username}});
     const t = await this.database.transaction();
 
     try {
-      person.name = upDatedValues.name;
-      person.surname = upDatedValues.surname;
-      person.ssn = upDatedValues.ssn;
-      person.username = upDatedValues.username;
-      person.email = upDatedValues.email;
-      
-      await person.save({ transaction: t });
+      personToUpdate.name = upDatedValues.name;
+      personToUpdate.surname = upDatedValues.surname;
+      personToUpdate.ssn = upDatedValues.ssn;
+      personToUpdate.username = upDatedValues.username;
+      personToUpdate.email = upDatedValues.email;
+
+      await personToUpdate.save({ transaction: t });
       t.commit();
-      return person;
+      return personToUpdate;
     } catch(error) {
       t.rollback();
       throw error;

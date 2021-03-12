@@ -2,7 +2,7 @@ const path = require('path');
 const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
-const reqHandlerLoader = require('./src/api'); //boven i dramat
+const reqHandlerLoader = require('./src/api');
 var cors = require('cors')
 app.use(cors())
 
@@ -17,9 +17,6 @@ require('dotenv-safe').config({allowEmptyValues: true,
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-
-
-const cookieParser = require('cookie-parser');
 
 app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 

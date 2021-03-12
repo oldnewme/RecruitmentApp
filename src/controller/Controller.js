@@ -1,5 +1,4 @@
 const ApplicationDAO = require('../integration/ApplicationDAO');
-const applicants = require('../integration/ApplicantDB');
 
 /**
  * The controller for the application that is the sole caller of

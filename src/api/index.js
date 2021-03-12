@@ -1,5 +1,3 @@
-const RecruiterAPI = require('./RecruiterAPI');
-const ApplicantAPI = require('./ApplicantAPI');
 const PersonAPI = require('./PersonAPI');
 
 /**
@@ -36,8 +34,6 @@ const PersonAPI = require('./PersonAPI');
         }
  }
  const loader = new RequestHandlerLoader();
- loader.addRequestHandler(new ApplicantAPI());
- loader.addRequestHandler(new RecruiterAPI());
  loader.addRequestHandler(new PersonAPI());
 
  module.exports = loader;
