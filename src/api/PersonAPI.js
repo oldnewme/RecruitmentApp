@@ -60,8 +60,8 @@ class PersonAPI {
         Validators.isEmail(personDTO.email);
         Validators.isValidSSN(personDTO.ssn);
         Validators.isAlphaNumeric(personDTO.username);
-        Validators.validName(personDTO.name)
-        Validators.validSurname(personDTO.surname)
+        Validators.validName(personDTO.name);
+        Validators.validSurname(personDTO.surname);
 
         await controller.signupPerson(personDTO, role);
         return res.status(200).json(personDTO)
@@ -109,7 +109,7 @@ class PersonAPI {
           }
 
           if(person.password == req.body.password){
-            const user = userJSON
+            const user = userJSON;
             const accessToken = Authorization.generateAccessToken(user);
             const refreshToken = Authorization.generateRefreshToken(user);
 

@@ -3,8 +3,8 @@ const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
 const reqHandlerLoader = require('./src/api');
-var cors = require('cors')
-app.use(cors())
+var cors = require('cors');
+app.use(cors());
 
 //for logging
 const morgan = require('morgan');
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World!');
 })
 
 // logging, we can use morgan tokens to specify exactly what to log
