@@ -12,7 +12,7 @@ const person = new PersonDTO(
     "password" : "bajen123",
     "ssn" : "19990915",
     "email" : "jabir@kth.se",
-    "roleId" : 1
+    "role" : 1
   }
 ); //userDTO
 
@@ -250,8 +250,43 @@ describe('Log in person', () => {
   })
 })
 
+
+
 describe('Authorization test for recruiter and applicant', () => {
   jest.useFakeTimers()
+
+  it('Create recruiter', async () => {
+    const res = await request(app)
+      .post('/api/person/signup')
+      .send({
+        name: "recruiter",
+        surname: "recruiter",
+        ssn: "19700101",
+        email: "recruiter@recruiter.recruiter",
+        username: "recruiter",
+        password: "recruiter",
+        roleId: 1
+      })
+    expect(res.statusCode).toEqual(200)
+  })
+
+  
+  it('Create applicant', async () => {
+    const res = await request(app)
+      .post('/api/person/signup')
+      .send({
+        name: "applicant",
+        surname: "applicant",
+        ssn: "19700102",
+        email: "applicant@applicant.applicant",
+        username: "applicant",
+        password: "applicant",
+        roleId: 2
+      })
+    expect(res.statusCode).toEqual(200)
+  })
+
+
   let accessTokenRecruiter;
   let accessTokenApplicant;
   it('Log in and recive access token (recruiter)', async () => {
@@ -320,17 +355,32 @@ describe('Authorization test for recruiter and applicant', () => {
   })
 })
 
+
 describe('Update null value test', () => {
   jest.useFakeTimers()
   let accessTokenNull1;
-  let accessTokenNull2;
+
+  it('Create user with null value', async () => {
+    const res = await request(app)
+      .post('/api/person/signup')
+      .send({
+        name: "09695060848347644085735346228334752515337078300310219385669578588",
+        surname: "null",
+        ssn: "19700107",
+        email: "null@null.null",
+        username: "nullnull123",
+        password: "nullnull",
+        roleId: 2
+      })
+    expect(res.statusCode).toEqual(200)
+  })
 
   it('Logs in existing user with null name in db', async () => {
     const res = await request(app)
       .post('/api/person/login')
       .send({
         email: "",
-        username: "nullnull1",
+        username: "nullnull123",
         password: "nullnull"
       })
       accessTokenNull1 = res.body.accessToken;
@@ -345,9 +395,9 @@ describe('Update null value test', () => {
       .send({
         name: "null",
         surname: "null",
-        ssn: "19700103",
-        email: "null2@null.null",
-        username: "nullnull1",
+        ssn: "19700107",
+        email: "jabir@kth.se",
+        username: "nullnull123",
       })
     expect(res.statusCode).toEqual(401)
   })
@@ -358,9 +408,9 @@ describe('Update null value test', () => {
       .send({
         name: "null",
         surname: "null",
-        ssn: "19700103",
-        email: "null1@null.null",
-        username: "nullnull2",
+        ssn: "19700107",
+        email: "null@null.null",
+        username: "Homam123",
       })
     expect(res.statusCode).toEqual(401)
   })
@@ -371,9 +421,9 @@ describe('Update null value test', () => {
       .send({
         name: "null",
         surname: "null",
-        ssn: "19700104",
-        email: "null1@null.null",
-        username: "nullnull1",
+        ssn: "19990915",
+        email: "null@null.null",
+        username: "nullnull123",
       })
     expect(res.statusCode).toEqual(401)
   })
@@ -385,8 +435,8 @@ describe('Update null value test', () => {
       .send({
         name: "null",
         surname: "null",
-        ssn: "19700103",
-        email: "null1@null.null",
+        ssn: "19700107",
+        email: "null@null.null",
         username: "nullnull1",
       })
     expect(res.statusCode).toEqual(200)

@@ -86,7 +86,8 @@ class ApplicationDAO {
       Validators.isEmail(personDTO.email);
       Validators.isValidSSN(personDTO.ssn);
       Validators.isAlphaNumeric(personDTO.username);
-      Validators.validName(personDTO.name, personDTO.surname)
+      Validators.validName(personDTO.name)
+      Validators.validSurname(personDTO.surname)
         const createdPerson = await Person.create({
           name: personDTO.name,
           surname: personDTO.surname,
