@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ Homam ]
+    branches: [ main ]
   pull_request:
-    branches: [ Homam ]
+    branches: [ main ]
 
 jobs:
   npm-inst:
