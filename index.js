@@ -2,9 +2,9 @@ const path = require('path');
 const APP_ROOT_DIR = path.join(__dirname, '.');
 const express = require('express');
 const app = express();
-const reqHandlerLoader = require('./src/api'); //boven i dramat
-var cors = require('cors')
-app.use(cors())
+const reqHandlerLoader = require('./src/api');
+var cors = require('cors');
+app.use(cors());
 
 //for logging
 const morgan = require('morgan');
@@ -18,13 +18,10 @@ require('dotenv-safe').config({allowEmptyValues: true,
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-
-const cookieParser = require('cookie-parser');
-
 app.use(express.static(path.join(APP_ROOT_DIR, 'public')));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World!');
 })
 
 // logging, we can use morgan tokens to specify exactly what to log

@@ -20,6 +20,11 @@ class Authorization {
         })
     }
 
+    /**
+     * 
+     * @param {json web token} token The token used for authentication/authorization
+     * @returns userinfo as a json object
+     */
     static getUserInfo(token) {
         var atob = require('atob');
         var base64Url = token.split('.')[1];
@@ -27,6 +32,11 @@ class Authorization {
         return JSON.parse(atob(base64));
       }
 
+    /**
+     * Used to authenticate a role in a given request
+     * @param {RoleId} roleId identifies which role a person has
+     * @returns whether a user has access to a certain resource
+     */
     static authenticateRole(roleId){    
         return async (req, res, next) => {
             const userAccessToken = req.headers['authorization'].split(" ")[1];

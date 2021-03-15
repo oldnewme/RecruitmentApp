@@ -4,11 +4,12 @@ const assert = require('assert').strict;
 const validator = require('validator');
 const missingString = '09695060848347644085735346228334752515337078300310219385669578588';
 /**
+ * Class with validators for client input
  */
 class Validators {
     /**
-     * 
-     * @param {*} email 
+     * Validates that input is a valid email
+     * @param {String} email the email of given user
      */
     static isEmail(email){
         if(email != missingString){
@@ -20,6 +21,10 @@ class Validators {
         }
     }
 
+    /**
+     * Validates that input is a valid password
+     * @param {String} password the password of given user
+     */
     static isValidPassword(password){
         if(password != missingString){
             try {
@@ -29,7 +34,10 @@ class Validators {
             }
         }
     }
-
+    /**
+     * Validates that input is a valid ssn
+     * @param {String} ssn the ssn of given user
+     */
     static isValidSSN(ssn){
         if(ssn != missingString){
             try {
@@ -47,6 +55,10 @@ class Validators {
         }
     }
 
+    /**
+     * Validates that input is a valid username
+     * @param {String} username the username of given user
+     */
     static isAlphaNumeric(username){
         if(username != missingString){
             try {
@@ -58,6 +70,10 @@ class Validators {
         }
     }
     
+    /**
+     * Validates that input is a valid name
+     * @param {String} name the name of given user
+     */
     static validName(name){
         if(name != missingString){
             try {
@@ -71,6 +87,10 @@ class Validators {
         }
     }
 
+    /**
+     * Validates that input is a valid surname
+     * @param {String} surname the surname of given user
+     */
     static validSurname(surname){
         if(surname != missingString){
             try {
