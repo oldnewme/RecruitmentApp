@@ -1,4 +1,4 @@
-# 2. Implement Node.js as backend runtime environment
+# 4. Implement Node.js as backend runtime environment
 
 Date: 2021-02-01
 
@@ -12,8 +12,7 @@ To run a server that will serve incoming requests from a client a backend runtim
 
 ## Decision
 
-We will use Node.js as our backend runtime environment. We believe that it will be easy to maintain, scale and further develop the product using Node.js.
+We will use Node.js as our backend runtime environment.
 
 ## Consequences
-
-Node.js will let us use a vast number of frameworks and libraries that will simplify our development process.
+We believe that it will be easy to maintain, scale and further develop the product using Node.js. Node.js will let us use a vast number of frameworks and libraries that will simplify our development process.
