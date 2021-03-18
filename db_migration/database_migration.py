@@ -48,7 +48,8 @@ def migrate_role_table():
     all = old_db_cursor.fetchall()
     chechForNull(all)
     for i in range(0, len(all)):
-        new_db_cursor.execute("INSERT INTO role (role_id, name) VALUES (%s, %s)", (all[i][0], all[i][1])) 
+        new_db_cursor.execute("INSERT INTO role (role_id, name) VALUES (%s, %s)", 
+          (all[i][0], all[i][1])) 
 
 def migrate_person_table():
     old_db_cursor.execute("SELECT * FROM person")
